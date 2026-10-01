@@ -1,0 +1,128 @@
+{
+  "appName": "ہیلو AI",
+  "tagline": "آپ کی آواز۔ آپ کا حق۔ آپ کا AI گائیڈ۔",
+  "app": {
+    "navigatorLabel": "AI گائیڈ",
+    "phaseBadge": "مرحلہ 1.5"
+  },
+  "welcome": {
+    "title": "بتائیں آپ کو کیا مدد چاہیے۔",
+    "subtitle": "اپنی زبان میں بولیں یا لکھیں۔ میں آپ کو سرکاری اسکیمیں تلاش کرنے میں مدد کروں گا۔",
+    "start": "ہیلو AI کے ساتھ شروع کریں",
+    "chooseLanguage": "اپنی زبان منتخب کریں",
+    "languageBadge": "12 ہندوستانی زبانیں",
+    "chooseNeed": "یا جو چاہیے اسے ٹیپ کریں:",
+    "privacyNote": "12 ہندوستانی زبانیں • رازداری محفوظ • آواز پہلا رسائی"
+  },
+  "assistant": {
+    "placeholder": "مثال: مجھے چھوٹا کاروبار شروع کرنے میں مدد چاہیے...",
+    "send": "بھیجیں",
+    "listen": "بولنے کے لیے ٹیپ کریں",
+    "stop": "روکیں",
+    "speak": "بول رہا ہے...",
+    "replay": "پیغام سنیں",
+    "stopAudio": "آڈیو روکیں",
+    "voiceQuery": "آوازی سوال",
+    "typeAnswer": "اپنا جواب لکھیں...",
+    "runDemo": "ڈیمو چلائیں",
+    "reset": "ری سیٹ",
+    "schemeSuggestion": "تجویز کردہ اسکیم، اہلیت کی صورتحال، ضروری دستاویزات اور مرحلہ وار رہنمائی یہاں موجود ہے:",
+    "schemeMatched": "شکریہ! آپ کی معلومات کی تصدیق ہو گئی ہے اور آپ کے لیے موزوں اسکیم یہاں ہے:"
+  },
+  "conversation": {
+    "thinking": "آپ کی درخواست سمجھی جا رہی ہے...",
+    "listening": "سن رہا ہے...",
+    "processing": "آپ کی آواز پر کارروائی کی جا رہی ہے..."
+  },
+  "service": {
+    "viewDetails": "تفصیلات دیکھیں",
+    "checkEligibility": "اہلیت چیک کریں",
+    "requiredDocuments": "ضروری دستاویزات",
+    "applicationSteps": "مرحلہ وار رہنمائی",
+    "officialWebsite": "سرکاری پورٹل",
+    "verifiedSource": "تصدیق شدہ ذریعہ",
+    "matchScore": "{score}% مطابقت",
+    "targetAudience": "ہدف گروپ:",
+    "verifiedOn": "تصدیق شدہ: {date}",
+    "openStep": "مرحلے کا لنک کھولیں",
+    "action": "کارروائی:",
+    "loading": "سرکاری خدمات لوڈ ہو رہی ہیں...",
+    "empty": "آپ کی تلاش سے مماثل کوئی خدمت نہیں ملی۔ تلاش کا لفظ بدلیں۔",
+    "discover": "سرکاری منصوبے اور امداد تلاش کریں"
+  },
+  "eligibility": {
+    "title": "آپ کی اہلیت کی تفصیلات",
+    "potentiallyEligible": "آپ اس اسکیم کے لیے اہل معلوم ہوتے ہیں",
+    "notEligible": "کچھ شرائط پوری نہیں ہیں",
+    "moreInformationRequired": "مزید معلومات درکار ہیں",
+    "missingInfoTitle": "مزید معلومات درکار ہیں",
+    "matchedTitle": "آپ جن شرائط کی پوری کرتے ہیں",
+    "failedTitle": "وہ شرائط جو پوری نہیں ہوتیں"
+  },
+  "documents": {
+    "title": "ضروری دستاویزات",
+    "required": "ضروری",
+    "optional": "اختیاری",
+    "needToConfirm": "آپ کا {field} کی تصدیق ضروری ہے"
+  },
+  "guidance": {
+    "title": "مرحلہ وار رہنمائی",
+    "nextStep": "اگلا قدم"
+  },
+  "progress": {
+    "sessionId": "سیشن آئی ڈی",
+    "profileTitle": "فعال پروفائل کی تفصیلات",
+    "phaseBadge": "مرحلہ 1 سیشن"
+  },
+  "profile": {
+    "language": "منتخب زبان",
+    "age": "عمر",
+    "state": "صوبہ",
+    "occupation": "کاروبار / ادارہ",
+    "userResponses": "صارف کے جوابات:"
+  },
+  "privacy": {
+    "title": "رازداری اور حفاظت کی ضمانت",
+    "intro": "HELLO AI سخت ڈیٹا کم سے کم کرنے کے اصولوں پر کام کرتا ہے۔ ہم جمع یا محفوظ نہیں کرتے:",
+    "passwords": "پاس ورڈ یا پن",
+    "bankPasswords": "بینک پاس ورڈ یا OTP",
+    "aadhaar": "مکمل آدھار نمبر یا مالی تفصیلات"
+  },
+  "common": {
+    "notProvided": "ابھی تک فراہم نہیں کیا گیا"
+  },
+  "nav": {
+    "label": "نیچے کا نیویگیشن",
+    "home": "ہوم",
+    "assistant": "AI سے بات کریں",
+    "services": "سرکاری خدمات",
+    "progress": "میری پیشرفت"
+  },
+  "accessibility": {
+    "highContrast": "ہائی کنٹراسٹ موڈ",
+    "fontIncrease": "بڑا ٹیکسٹ",
+    "fontNormal": "عام ٹیکسٹ",
+    "audioHelp": "یہ صفحہ سنیں"
+  },
+  "actions": {
+    "back": "واپس",
+    "close": "بند کریں",
+    "submit": "جمع کریں",
+    "tryAgain": "دوبارہ کوشش کریں",
+    "clearSession": "معلومات پاک کریں",
+    "sessionCleared": "آپ کی معلومات محفوظ طریقے سے مٹا دی گئی ہیں۔",
+    "searchPlaceholder": "اسکیمیں تلاش کریں...",
+    "categoryAll": "تمام زمرے",
+    "categoryBusiness": "خواتین کی تجارت",
+    "categoryEducation": "تعلیم و وظائف",
+    "categoryAssistance": "سرکاری امداد",
+    "categorySkill": "مہارت اور خود روزگار"
+  },
+  "errors": {
+    "network": "انٹرنیٹ کنیکشن دستیاب نہیں ہے۔",
+    "voiceUnavailable": "اس براؤزر میں وائس ان پٹ دستیاب نہیں ہے۔",
+    "languageUnsupported": "منتخب کردہ زبان فی الحال معاون نہیں ہے۔",
+    "translationUnavailable": "یہ ترجمہ ابھی دستیاب نہیں، اس لیے انگریزی میں دکھایا جا رہا ہے۔",
+    "generic": "کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔"
+  }
+}

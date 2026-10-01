@@ -1,0 +1,128 @@
+{
+  "appName": "HELLO AI",
+  "tagline": "Your Voice. Your Rights. Your AI Guide.",
+  "app": {
+    "navigatorLabel": "AI Navigator",
+    "phaseBadge": "Phase 1.5"
+  },
+  "welcome": {
+    "title": "Tell me what you need.",
+    "subtitle": "Simply speak or type in your language. I will help you find official government support, check eligibility, and guide you step-by-step.",
+    "start": "Start with HELLO AI",
+    "chooseLanguage": "Choose your language",
+    "languageBadge": "12 Indian Languages",
+    "chooseNeed": "Or tap what you need:",
+    "privacyNote": "12 Indian Languages • Privacy Protected • Voice-First Accessibility"
+  },
+  "assistant": {
+    "placeholder": "e.g., I want help starting a small business...",
+    "send": "Send",
+    "listen": "Tap to speak",
+    "stop": "Stop",
+    "speak": "Speaking...",
+    "replay": "Listen to message",
+    "stopAudio": "Stop audio",
+    "voiceQuery": "Voice query",
+    "typeAnswer": "Type your answer...",
+    "runDemo": "Run Demo",
+    "reset": "Reset",
+    "schemeSuggestion": "Here is the recommended scheme, eligibility status, required documents, and step-by-step guide:",
+    "schemeMatched": "Thank you! Your information has been verified and here is your matched scheme:"
+  },
+  "conversation": {
+    "thinking": "Understanding your request...",
+    "listening": "Listening...",
+    "processing": "Processing your voice..."
+  },
+  "service": {
+    "viewDetails": "View Details",
+    "checkEligibility": "Check Eligibility",
+    "requiredDocuments": "Required Documents",
+    "applicationSteps": "Step-by-Step Guide",
+    "officialWebsite": "Official Government Portal",
+    "verifiedSource": "Verified Official Source",
+    "matchScore": "{score}% Match",
+    "targetAudience": "Target Audience:",
+    "verifiedOn": "Verified on: {date}",
+    "openStep": "Open Step Link",
+    "action": "Action:",
+    "loading": "Loading government services...",
+    "empty": "No services found matching your search. Try changing your search term.",
+    "discover": "Discover Official Schemes & Assistance"
+  },
+  "eligibility": {
+    "title": "Your Eligibility Breakdown",
+    "potentiallyEligible": "You appear eligible for this scheme",
+    "notEligible": "Some criteria are not met",
+    "moreInformationRequired": "Additional information required",
+    "missingInfoTitle": "Still need details",
+    "matchedTitle": "Criteria you meet",
+    "failedTitle": "Criteria not met"
+  },
+  "documents": {
+    "title": "Required Documents",
+    "required": "Required",
+    "optional": "Optional",
+    "needToConfirm": "Need to confirm your {field}"
+  },
+  "guidance": {
+    "title": "Step-by-Step Guide",
+    "nextStep": "Next Step"
+  },
+  "progress": {
+    "sessionId": "Session ID",
+    "profileTitle": "Active Profile Details",
+    "phaseBadge": "Phase 1 Session"
+  },
+  "profile": {
+    "language": "Selected Language",
+    "age": "Age",
+    "state": "State",
+    "occupation": "Occupation / Enterprise",
+    "userResponses": "User Responses:"
+  },
+  "privacy": {
+    "title": "Privacy & Security Guarantee",
+    "intro": "HELLO AI operates on strict data minimization principles. We do NOT collect or store:",
+    "passwords": "Passwords or PINs",
+    "bankPasswords": "Bank passwords or OTPs",
+    "aadhaar": "Full Aadhaar numbers or financial credentials"
+  },
+  "common": {
+    "notProvided": "Not provided yet"
+  },
+  "nav": {
+    "label": "Bottom Navigation",
+    "home": "Home",
+    "assistant": "Talk to AI",
+    "services": "Government Services",
+    "progress": "My Progress"
+  },
+  "accessibility": {
+    "highContrast": "High Contrast Mode",
+    "fontIncrease": "Larger Text",
+    "fontNormal": "Normal Text",
+    "audioHelp": "Listen to this page"
+  },
+  "actions": {
+    "back": "Back",
+    "close": "Close",
+    "submit": "Submit",
+    "tryAgain": "Try Again",
+    "clearSession": "Clear Session & Privacy Data",
+    "sessionCleared": "Your session and personal entries have been cleared safely.",
+    "searchPlaceholder": "Search schemes by keyword or need...",
+    "categoryAll": "All Categories",
+    "categoryBusiness": "Women Enterprise & Business",
+    "categoryEducation": "Education & Scholarships",
+    "categoryAssistance": "Government Assistance",
+    "categorySkill": "Skills & Self-Employment"
+  },
+  "errors": {
+    "network": "Unable to connect right now. Please check your internet connection.",
+    "voiceUnavailable": "Voice input is not available on this browser. You can type below.",
+    "languageUnsupported": "Selected language is currently not supported.",
+    "translationUnavailable": "This translation is not available yet, so it is shown in English.",
+    "generic": "Something went wrong. Please try again or type your request."
+  }
+}

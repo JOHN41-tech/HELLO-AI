@@ -1,0 +1,128 @@
+{
+  "appName": "હેલો AI",
+  "tagline": "તમારો અવાજ. તમારો અધિકાર. તમારો AI ગાઇડ.",
+  "app": {
+    "navigatorLabel": "AI ગાઇડ",
+    "phaseBadge": "તબાકો 1.5"
+  },
+  "welcome": {
+    "title": "તમને શું મદદ જોઈએ છે તે જણાવો.",
+    "subtitle": "તમારી પોતાની ભાષામાં બોલો અથવા લખો. હું તમને સરકારી યોજનાઓ શોધવામાં મદદ કરીશ.",
+    "start": "હેલો AI સાથે શરૂ કરો",
+    "chooseLanguage": "તમારી ભાષા પસંદ કરો",
+    "languageBadge": "12 ભારતીય ભાષાઓ",
+    "chooseNeed": "અથવા તમને જે જોઈએ તે ટેપ કરો:",
+    "privacyNote": "12 ભારતીય ભાષાઓ • ગોપનીયતા સુરક્ષિત • વોઇસ-ફર્સ્ટ સુલભતા"
+  },
+  "assistant": {
+    "placeholder": "ઉદા: મને નાનો વ્યવસાય શરૂ કરવામાં મદદ જોઈએ છે...",
+    "send": "મોકલો",
+    "listen": "બોલવા માટે ટેપ કરો",
+    "stop": "અટકાવો",
+    "speak": "બોલી રહ્યું છે...",
+    "replay": "સંદેશ સાંભળો",
+    "stopAudio": "ઓડિયો અટકાવો",
+    "voiceQuery": "વોઇસ પ્રશ્ન",
+    "typeAnswer": "તમારો જવાબ લખો...",
+    "runDemo": "ડેમો ચલાવો",
+    "reset": "રીસેટ",
+    "schemeSuggestion": "ભલામણ કરેલી યોજના, પાત્રતા સ્થિતિ, જરૂરી દસ્તાવેજો અને પગલાં-દર-પગલાં માર્ગદર્શિકા અહીં છે:",
+    "schemeMatched": "આભાર! તમારી માહિતી ચકાસવામાં આવી છે અને તમને અનુરળાય એવી યોજના અહીં છે:"
+  },
+  "conversation": {
+    "thinking": "તમારી વિનંતી સમજી રહ્યું છે...",
+    "listening": "સાંભળી રહ્યું છે...",
+    "processing": "તમારા અવાજ પર પ્રક્રિયા કરી રહ્યું છે..."
+  },
+  "service": {
+    "viewDetails": "વિગતો જુઓ",
+    "checkEligibility": "પાત્રતા તપાસો",
+    "requiredDocuments": "જરૂરી દસ્તાવેજો",
+    "applicationSteps": "પગલાં-દર-પગલાં માર્ગદર્શિકા",
+    "officialWebsite": "અધિકૃત સરકારી પોર્ટલ",
+    "verifiedSource": "ચકાસાયેલ સ્ત્રોત",
+    "matchScore": "{score}% મેળખ",
+    "targetAudience": "લક્ષ્ય જૂથ:",
+    "verifiedOn": "ચકાસાયેલ: {date}",
+    "openStep": "પગલાની લિંક ખોલો",
+    "action": "કાર્ય:",
+    "loading": "સરકારી સેવાઓ લોડ થઈ રહી છે...",
+    "empty": "તમારી શોધ સાથે મેળખતી કોઈ સેવા મળી નથી. શોધ શબ્દ બદલો.",
+    "discover": "અધિકૃત યોજનાઓ અને સહાય શોધો"
+  },
+  "eligibility": {
+    "title": "તમારી પાત્રતાની વિગતો",
+    "potentiallyEligible": "તમે આ યોજના માટે પાત્ર જણાઓ છો",
+    "notEligible": "કેટલાક માપદંડો પૂર્ણ થતા નથી",
+    "moreInformationRequired": "વધારાની માહિતી જરૂરી છે",
+    "missingInfoTitle": "વધુ માહિતી જોઈએ છે",
+    "matchedTitle": "તમે પૂરી કરેલા માપદંડો",
+    "failedTitle": "પૂર્ણ ન થયેલા માપદંડો"
+  },
+  "documents": {
+    "title": "જરૂરી દસ્તાવેજો",
+    "required": "જરૂરી",
+    "optional": "વૈકલ્પિક",
+    "needToConfirm": "તમારું {field} કન્ફર્મ કરવું જરૂરી છે"
+  },
+  "guidance": {
+    "title": "પગલાં-દર-પગલાં માર્ગદર્શિકા",
+    "nextStep": "આગળનું પગલું"
+  },
+  "progress": {
+    "sessionId": "સેશન આઈડી",
+    "profileTitle": "સક્રિય પ્રોફાઇલ વિગતો",
+    "phaseBadge": "તબાકો 1 સેશન"
+  },
+  "profile": {
+    "language": "પસંદ કરેલી ભાષા",
+    "age": "ઉંમર",
+    "state": "રાજ્ય",
+    "occupation": "વ્યવસાય / સંસ્થા",
+    "userResponses": "વપરાશકર્તાના જવાબો:"
+  },
+  "privacy": {
+    "title": "ગોપનીયતા અને સુરક્ષાની ખાતરી",
+    "intro": "HELLO AI કડકાર ડેટા લઘુત્તમીકરણ સિદ્ધાંતો પર કાર્ય કરે છે. અમે એકત્રિત કે સંગ્રહ કરતા નથી:",
+    "passwords": "પાસવર્ડ કે PIN",
+    "bankPasswords": "બેન્ક પાસવર્ડ કે OTP",
+    "aadhaar": "સંપૂર્ણ આધાર નંબર કે નાણાકીય વિગતો"
+  },
+  "common": {
+    "notProvided": "હજી આપવામાં આવ્યું નથી"
+  },
+  "nav": {
+    "label": "નીચેની નેવિગેશન",
+    "home": "હોમ",
+    "assistant": "AI સાથે વાત કરો",
+    "services": "સરકારી સેવાઓ",
+    "progress": "મારી પ્રગતિ"
+  },
+  "accessibility": {
+    "highContrast": "હાઇ કોન્ટ્રાસ્ટ મોડ",
+    "fontIncrease": "મોટા અક્ષરો",
+    "fontNormal": "સામાન્ય અક્ષરો",
+    "audioHelp": "આ પૃષ્ઠ સાંભળો"
+  },
+  "actions": {
+    "back": "પાછા જાવ",
+    "close": "બંધ કરો",
+    "submit": "સબમિટ કરો",
+    "tryAgain": "ફરી પ્રયાસ કરો",
+    "clearSession": "માહિતી સાફ કરો",
+    "sessionCleared": "તમારી માહિતી સુરક્ષિત રીતે દૂર કરવામાં આવી છે.",
+    "searchPlaceholder": "યોજનાઓ શોધો...",
+    "categoryAll": "બધી શ્રેણીઓ",
+    "categoryBusiness": "મહિલા સાહસિકતા",
+    "categoryEducation": "શિક્ષણ અને શિષ્યવૃત્તિ",
+    "categoryAssistance": "સરકારી સહાય",
+    "categorySkill": "કૌશલ્ય અને સ્વરોજગાર"
+  },
+  "errors": {
+    "network": "ઈન્ટરનેટ કનેક્શન ઉપલબ્ધ નથી.",
+    "voiceUnavailable": "આ બ્રાઉઝરમાં વોઇસ ઇનપુટ ઉપલબ્ધ નથી.",
+    "languageUnsupported": "પસંદ કરેલ ભાષા સમર્થિત નથી.",
+    "translationUnavailable": "આ અનુવાદ હજી ઉપલબ્ધ નથી, તેથી અંગ્રેજીમાં બતાવવામાં આવે છે.",
+    "generic": "કંઈક ખોટું થયું. કૃપા કરીને ફરી પ્રયાસ કરો."
+  }
+}

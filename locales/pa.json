@@ -1,0 +1,128 @@
+{
+  "appName": "ਹੈਲੋ AI",
+  "tagline": "ਤੁਹਾਡੀ ਆਵਾਜ਼। ਤੁਹਾਡਾ ਅਧਿਕਾਰ। ਤੁਹਾਡਾ AI ਗਾਈਡ।",
+  "app": {
+    "navigatorLabel": "AI ਗਾਈਡ",
+    "phaseBadge": "ਪੜਾਅ 1.5"
+  },
+  "welcome": {
+    "title": "ਦੱਸੋ ਤੁਹਾਨੂੰ ਕੀ ਮਦਦ ਚਾਹੀਦੀ ਹੈ।",
+    "subtitle": "ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਬੋਲੋ ਜਾਂ ਲਿਖੋ। ਮੈਂ ਤੁਹਾਨੂੰ ਸਰਕਾਰੀ ਸਕੀਮਾਂ ਲੱਭਣ ਵਿੱਚ ਮਦਦ ਕਰਾਂਗਾ।",
+    "start": "ਹੈਲੋ AI ਨਾਲ ਸ਼ੁਰੂ ਕਰੋ",
+    "chooseLanguage": "ਆਪਣੀ ਭਾਸ਼ਾ ਚੁਣੋ",
+    "languageBadge": "12 ਭਾਰਤੀ ਭਾਸ਼ਾਵਾਂ",
+    "chooseNeed": "ਜਾਂ ਜੋ ਚਾਹੀਦਾ ਹੈ ਉਹ ਟੈਪ ਕਰੋ:",
+    "privacyNote": "12 ਭਾਰਤੀ ਭਾਸ਼ਾਵਾਂ • ਗੋਪਨੀਯਤਾ ਸੁਰੱਖਿਅਤ • ਵਾਇਸ-ਫਰਸਟ ਸੁਲਭਤਾ"
+  },
+  "assistant": {
+    "placeholder": "ਉਦਾਹਰਨ: ਮੈਨੂੰ ਛੋਟਾ ਕਾਰੋਬਾਰ ਸ਼ੁਰੂ ਕਰਨ ਵਿੱਚ ਮਦਦ ਚਾਹੀਦੀ ਹੈ...",
+    "send": "ਭੇਜੋ",
+    "listen": "ਬੋਲਣ ਲਈ ਟੈਪ ਕਰੋ",
+    "stop": "ਰੋਕੋ",
+    "speak": "ਬੋਲ ਰਿਹਾ ਹੈ...",
+    "replay": "ਸੁਨੇਹਾ ਸੁਣੋ",
+    "stopAudio": "ਆਡੀਓ ਰੋਕੋ",
+    "voiceQuery": "ਵਾਇਸ ਸਵਾਲ",
+    "typeAnswer": "ਆਪਣਾ ਜਵਾਬ ਲਿਖੋ...",
+    "runDemo": "ਡੈਮੋ ਚਲਾਓ",
+    "reset": "ਰੀਸੈੱਟ",
+    "schemeSuggestion": "ਸਿਫ਼ਾਰਸ਼ ਕੀਤੀ ਸਕੀਮ, ਯੋਗਤਾ ਸਥਿਤੀ, ਲੋੜੀਂਦੇ ਦਸਤਾਵੇਜ਼ ਅਤੇ ਕਦਮ-ਦਰ-ਕਦਮ ਗਾਈਡ ਇੱਥੇ ਹਨ:",
+    "schemeMatched": "ਧੰਨਵਾਦ! ਤੁਹਾਡੀ ਜਾਣਕਾਰੀ ਦੀ ਪੜਤਾਲ ਹੋ ਗਈ ਹੈ ਅਤੇ ਤੁਹਾਨੂੰ ਰਹਿਆਂ ਜਾਂਦੀ ਸਕੀਮ ਇੱਥੇ ਹੈ:"
+  },
+  "conversation": {
+    "thinking": "ਤੁਹਾਡੀ ਬੇਨਤੀ ਸਮਝੀ ਜਾ ਰਹੀ ਹੈ...",
+    "listening": "ਸੁਣ ਰਿਹਾ ਹੈ...",
+    "processing": "ਤੁਹਾਡੀ ਆਵਾਜ਼ 'ਤੇ ਕਾਰਵਾਈ ਹੋ ਰਹੀ ਹੈ..."
+  },
+  "service": {
+    "viewDetails": "ਵੇਰਵੇ ਦੇਖੋ",
+    "checkEligibility": "ਯੋਗਤਾ ਦੀ ਜਾਂਚ ਕਰੋ",
+    "requiredDocuments": "ਲੋੜੀਂਦੇ ਦਸਤਾਵੇਜ਼",
+    "applicationSteps": "ਕਦਮ-ਦਰ-ਕਦਮ ਗਾਈਡ",
+    "officialWebsite": "ਅਧਿਕਾਰਤ ਸਰਕਾਰੀ ਪੋਰਟਲ",
+    "verifiedSource": "ਤਸਦੀਕ ਕੀਤਾ ਸਰੋਤ",
+    "matchScore": "{score}% ਮੈਚ",
+    "targetAudience": "ਟੀਚਾ ਸਮੂਹ:",
+    "verifiedOn": "ਪੜਤਾਲ ਕੀਤੀ: {date}",
+    "openStep": "ਕਦਮ ਲਿੰਕ ਖੋਲ੍ਹੋ",
+    "action": "ਕਾਰਵਾਈ:",
+    "loading": "ਸਰਕਾਰੀ ਸੇਵਾਵਾਂ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ...",
+    "empty": "ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਮੈਚ ਕਰਨ ਵਾਲੀ ਕੋਈ ਸੇਵਾ ਨਹੀਂ ਮਿਲੀ। ਖੋਜ ਦਾ ਸ਼ਬਦ ਬਦਲੋ।",
+    "discover": "ਅਧਿਕਾਰਤ ਯੋਜਨਾਵਾਂ ਅਤੇ ਸਹਾਇਤਾ ਲੱਭੋ"
+  },
+  "eligibility": {
+    "title": "ਤੁਹਾਡੀ ਯੋਗਤਾ ਦੇ ਵੇਰਵੇ",
+    "potentiallyEligible": "ਤੁਸੀਂ ਇਸ ਸਕੀਮ ਲਈ ਯੋਗ ਜਾਪਦੇ ਹੋ",
+    "notEligible": "ਕੁਝ ਸ਼ਰਤਾਂ ਪੂਰੀਆਂ ਨਹੀਂ ਹੁੰਦੀਆਂ",
+    "moreInformationRequired": "ਹੋਰ ਜਾਣਕਾਰੀ ਦੀ ਲੋੜ ਹੈ",
+    "missingInfoTitle": "ਹੋਰ ਜਾਣਕਾਰੀ ਚਾਹੀਦੀ ਹੈ",
+    "matchedTitle": "ਤੁਸੀਂ ਪੂਰੀਆਂ ਕੀਤੀਆਂ ਸ਼ਰਤਾਂ",
+    "failedTitle": "ਪੂਰੀਆਂ ਨਾ ਹੋਈਆਂ ਸ਼ਰਤਾਂ"
+  },
+  "documents": {
+    "title": "ਲੋੜੀਂਦੇ ਦਸਤਾਵੇਜ਼",
+    "required": "ਲੋੜੀਂਦਾ",
+    "optional": "ਚੋਣਵਾਂ",
+    "needToConfirm": "ਤੁਹਾਡਾ {field} ਪੱਕਾ ਕਰਨਾ ਜ਼ਰੂਰੀ ਹੈ"
+  },
+  "guidance": {
+    "title": "ਕਦਮ-ਦਰ-ਕਦਮ ਗਾਈਡ",
+    "nextStep": "ਅਗਲਾ ਕਦਮ"
+  },
+  "progress": {
+    "sessionId": "ਸੈਸ਼ਨ ਆਈਡੀ",
+    "profileTitle": "ਸਰਗਰਮ ਪ੍ਰੋਫਾਈਲ ਵੇਰਵੇ",
+    "phaseBadge": "ਪੜਾਅ 1 ਸੈਸ਼ਨ"
+  },
+  "profile": {
+    "language": "ਚੁਣੀ ਗਈ ਭਾਸ਼ਾ",
+    "age": "ਉਮਰ",
+    "state": "ਸੂਬਾ",
+    "occupation": "ਕਿੱਤਾ / ਵਪਾਰ",
+    "userResponses": "ਵਰਤੋਂਕਾਰ ਦੇ ਜਵਾਬ:"
+  },
+  "privacy": {
+    "title": "ਗੋਪਨੀਯਤਾ ਅਤੇ ਸੁਰੱਖਿਆ ਦੀ ਗਰੰਟੀ",
+    "intro": "HELLO AI ਸਖ਼ਤ ਡਾਟਾ ਘੱਟ-ਤੋਟ ਸਿਧਾਂਤਾਂ ਉੱਤੇ ਕੰਮ ਕਰਦਾ ਹੈ। ਅਸੀਂ ਇਕੱਠਾ ਜਾਂ ਸੰਭਾਲਦੇ ਨਹੀਂ ਹਾਂ:",
+    "passwords": "ਪਾਸਵਰਡ ਜਾਂ ਪਿੰਨ",
+    "bankPasswords": "ਬੈਂਕ ਪਾਸਵਰਡ ਜਾਂ OTP",
+    "aadhaar": "ਪੂਰਾ ਆਧਾਰ ਨੰਬਰ ਜਾਂ ਵਿੱਤੀ ਵੇਰਵੇ"
+  },
+  "common": {
+    "notProvided": "ਹਾਲੇ ਤੱਕ ਨਹੀਂ ਦਿੱਤਾ ਗਿਆ"
+  },
+  "nav": {
+    "label": "ਹੇਠਾਂ ਨੇਵੀਗੇਸ਼ਨ",
+    "home": "ਹੋਮ",
+    "assistant": "AI ਨਾਲ ਗੱਲ ਕਰੋ",
+    "services": "ਸਰਕਾਰੀ ਸੇਵਾਵਾਂ",
+    "progress": "ਮੇਰੀ ਤਰੱਕੀ"
+  },
+  "accessibility": {
+    "highContrast": "ਹਾਈ ਕੰਟ੍ਰਾਸਟ ਮੋਡ",
+    "fontIncrease": "ਵੱਡੇ ਅੱਖਰ",
+    "fontNormal": "ਆਮ ਅੱਖਰ",
+    "audioHelp": "ਇਸ ਪੰਨੇ ਨੂੰ ਸੁਣੋ"
+  },
+  "actions": {
+    "back": "ਵਾਪਸ",
+    "close": "ਬੰਦ ਕਰੋ",
+    "submit": "ਜਮ੍ਹਾਂ ਕਰੋ",
+    "tryAgain": "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ",
+    "clearSession": "ਜਾਣਕਾਰੀ ਸਾਫ਼ ਕਰੋ",
+    "sessionCleared": "ਤੁਹਾਡੀ ਜਾਣਕਾਰੀ ਸੁਰੱਖਿਅਤ ਰੂਪ ਨਾਲ ਹਟਾ ਦਿੱਤੀ ਗਈ ਹੈ।",
+    "searchPlaceholder": "ਸਕੀਮਾਂ ਖੋਜੋ...",
+    "categoryAll": "ਸਾਰੀਆਂ ਸ਼੍ਰੇਣੀਆਂ",
+    "categoryBusiness": "ਮਹਿਲਾ ਉੱਦਮਤਾ",
+    "categoryEducation": "ਸਿੱਖਿਆ ਅਤੇ ਵਜ਼ੀਫ਼ੇ",
+    "categoryAssistance": "ਸਰਕਾਰੀ ਮਦਦ",
+    "categorySkill": "ਹੁਨਰ ਅਤੇ ਸਵੈ-ਰੋਜ਼ਗਾਰ"
+  },
+  "errors": {
+    "network": "ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।",
+    "voiceUnavailable": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਵੌਇਸ ਇਨਪੁਟ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।",
+    "languageUnsupported": "ਚੁਣੀ ਗਈ ਭਾਸ਼ਾ ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਹੈ।",
+    "translationUnavailable": "ਇਹ ਅਨੁਵਾਦ ਹਾਲੇ ਉਪਲਬਧ ਨਹੀਂ, ਇਸ ਲਈ ਅੰਗਰੇਜ਼ੀ ਵਿੱਚ ਦਿਖਾਇਆ ਜਾ ਰਿਹਾ ਹੈ।",
+    "generic": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  }
+}
