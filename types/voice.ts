@@ -1,12 +1,13 @@
 import { LanguageCode } from './language';
 
-export type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking' | 'error' | 'unsupported';
+export type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking' | 'paused' | 'error' | 'unsupported';
 
 export interface SpeechToTextOptions {
   language: LanguageCode;
   locale?: string;
   continuous?: boolean;
   onResult: (text: string, isFinal: boolean) => void;
+  onEnd?: (completeTranscript: string) => void;
   onError: (error: string) => void;
   onStateChange?: (state: VoiceState) => void;
 }
@@ -25,5 +26,7 @@ export interface VoiceProvider {
   startListening(options: SpeechToTextOptions): void;
   stopListening(): void;
   speak(text: string, options: TextToSpeechOptions): void;
+  pauseSpeaking(): void;
+  resumeSpeaking(): void;
   stopSpeaking(): void;
 }

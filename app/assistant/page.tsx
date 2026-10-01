@@ -9,7 +9,7 @@ import { ChatMessage } from '@/components/assistant/ChatMessage';
 import { TypingIndicator } from '@/components/assistant/TypingIndicator';
 import { Button } from '@/components/ui/Button';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { Send, RotateCcw, PlayCircle, Sparkles } from 'lucide-react';
+import { ArrowUp, BriefcaseBusiness, HeartHandshake, Award, BookOpen, RotateCcw } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSession } from '@/hooks/useSession';
 import { useVoice } from '@/hooks/useVoice';
@@ -18,150 +18,223 @@ import { useConversation } from '@/hooks/useConversation';
 function AssistantContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('query');
-
   const { language, currentConfig, setLanguage, t } = useLanguage();
-  const { session, updateAnswer, clearSession } = useSession(language);
-  const { voiceState, transcript, errorMessage, startListening, stopListening } = useVoice(language);
-  const { messages, isTyping, error, sendMessage, answerQuestion, resetConversation } = useConversation(
-    session,
-    language
-  );
+  const { session, isLoading, updateAnswer } = useSession(language);
+  const { voiceState, transcript, errorMessage, startListening, stopListening, speak } = useVoice(language);
+  const {
+    messages,
+    isTyping,
+    error,
+    sendMessage,
+    answerQuestion,
+    retryLastRequest,
+    resetConversation,
+  } = useConversation(session, language);
 
   const [textInput, setTextInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const didInit = useRef(false);
+  const lastAutoSpokenMessageId = useRef<string | null>(null);
 
   useEffect(() => {
-    if (initialQuery && messages.length === 0 && !didInit.current) {
+    if (initialQuery && messages.length === 0 && !didInit.current && !isLoading) {
       didInit.current = true;
-      sendMessage(initialQuery);
+      void sendMessage(initialQuery);
     }
-  }, [initialQuery, messages.length, sendMessage]);
+  }, [initialQuery, isLoading, messages.length, sendMessage]);
 
   useEffect(() => {
-    if (transcript && voiceState === 'processing') {
-      sendMessage(transcript, true);
+    if (messages.length < 2) return;
+    const latest = messages[messages.length - 1];
+    const previousUserMessage = [...messages.slice(0, -1)].reverse().find((message) => message.role === 'user');
+    if (
+      latest.role === 'assistant' &&
+      previousUserMessage?.type === 'voice' &&
+      latest.metadata?.shouldSpeak !== false &&
+      lastAutoSpokenMessageId.current !== latest.id
+    ) {
+      lastAutoSpokenMessageId.current = latest.id;
+      speak(latest.content, undefined, latest.id);
     }
-  }, [transcript, voiceState, sendMessage]);
+  }, [messages, speak]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    messagesEndRef.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'end' });
   }, [messages, isTyping]);
 
-  const handleSendText = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (textInput.trim()) {
-      sendMessage(textInput);
-      setTextInput('');
-    }
+  const submitText = (text: string) => {
+    const cleanText = text.trim();
+    if (!cleanText || isTyping) return;
+    void sendMessage(cleanText);
+    setTextInput('');
+    if (textAreaRef.current) textAreaRef.current.style.height = '3rem';
   };
 
-  const runDemoFlow = () => {
-    resetConversation();
-    clearSession();
-    setTimeout(() => sendMessage(t('actions.categoryBusiness')), 50);
+  const handleSendText = (event: React.FormEvent) => {
+    event.preventDefault();
+    submitText(textInput);
   };
+
+  const quickPrompts = [
+    { icon: BriefcaseBusiness, key: 'actions.categoryBusiness' },
+    { icon: HeartHandshake, key: 'actions.categoryAssistance' },
+    { icon: Award, key: 'actions.categorySkill' },
+    { icon: BookOpen, key: 'actions.categoryEducation' },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col" dir={currentConfig.direction} lang={currentConfig.code}>
+    <div className="flex min-h-screen flex-col bg-slate-950" dir={currentConfig.direction} lang={currentConfig.code}>
       <Header currentLanguage={language} onLanguageChange={setLanguage} />
 
-      <div className="flex-1 max-w-3xl w-full mx-auto px-4 py-4 flex flex-col">
-        {/* Demo Banner */}
-        <div className="flex items-center justify-between gap-2 p-3 rounded-xl bg-slate-900 border border-slate-800 mb-4 shadow-md">
-          <div className="flex items-center gap-2 text-xs text-slate-300">
-            <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>{t('app.phaseBadge')} — {currentConfig.nativeName}</span>
+      <main id="main-content" className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-80 pt-5 sm:px-6 sm:pb-64">
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-400">
+              {t('app.navigatorLabel')}
+            </p>
+            <h1 className="mt-1 text-2xl font-bold leading-tight text-slate-100 sm:text-3xl">
+              {t('welcome.title')}
+            </h1>
+            {messages.length === 0 && (
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base">
+                {t('welcome.subtitle')}
+              </p>
+            )}
           </div>
-          <button
-            onClick={runDemoFlow}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-300 hover:bg-emerald-900 border border-emerald-500/40 text-xs font-bold transition-all cursor-pointer"
-            aria-label={t('assistant.runDemo')}
-          >
-            <PlayCircle className="w-3.5 h-3.5" />
-            <span>{t('assistant.runDemo')}</span>
-          </button>
+          {messages.length > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={resetConversation}
+              aria-label={t('assistant.reset')}
+              title={t('assistant.reset')}
+            >
+              <RotateCcw className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">{t('assistant.reset')}</span>
+            </Button>
+          )}
         </div>
 
-        {/* Conversation error */}
-        {error && (
-          <ErrorMessage message={error || t('errors.generic')} onRetry={resetConversation} />
-        )}
+        {error && <ErrorMessage message={error} onRetry={() => void retryLastRequest()} />}
+        {errorMessage && <ErrorMessage message={errorMessage} />}
 
-        {/* Voice error notice */}
-        {errorMessage && (
-          <ErrorMessage message={errorMessage || t('errors.voiceUnavailable')} />
-        )}
-
-        {/* Conversation */}
-        <div className="flex-1 space-y-3 pb-48">
+        <section
+          className="flex-1"
+          aria-label={t('nav.assistant')}
+          aria-live="off"
+        >
           {messages.length === 0 ? (
-            <div className="text-center py-12 px-4 space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-xl">
-                <Sparkles className="w-8 h-8 animate-pulse" />
+            <div className="mx-auto flex max-w-3xl flex-col items-center py-5 text-center sm:py-9">
+              <p className="mt-0 max-w-lg text-sm leading-relaxed text-slate-500">
+                {t('welcome.privacyNote')}
+              </p>
+              <div className="mt-6 w-full max-w-2xl">
+                <p className="mb-3 text-xs font-semibold text-slate-500">{t('welcome.chooseNeed')}</p>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {quickPrompts.map(({ icon: Icon, key }) => {
+                    const label = t(key);
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => void sendMessage(label)}
+                        disabled={isTyping || isLoading}
+                        className="flex min-h-12 items-center gap-3 rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-start text-sm font-medium text-slate-300 transition-colors hover:border-emerald-500/50 hover:bg-emerald-950 hover:text-slate-100 disabled:opacity-60"
+                      >
+                        <Icon className="h-4 w-4 shrink-0 text-emerald-400" aria-hidden="true" />
+                        <span className="leading-snug">{label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <h2 className="text-2xl font-bold text-slate-100">{t('welcome.title')}</h2>
-              <p className="text-sm text-slate-300 max-w-md mx-auto">{t('welcome.subtitle')}</p>
             </div>
           ) : (
-            messages.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                message={msg}
-                language={language}
-                onAnswerQuestion={async (key, val) => {
-                  await updateAnswer(key, val);
-                  answerQuestion(key, val, (k, v) => updateAnswer(k, v));
-                }}
-              />
-            ))
+            <div
+              className="space-y-4 pb-3"
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions text"
+              aria-label={t('nav.assistant')}
+            >
+              {messages.map((message) => (
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  language={language}
+                  onAnswerQuestion={(key, value) => {
+                    void answerQuestion(key, value, (field, answer) => { void updateAnswer(field, answer); });
+                  }}
+                  onTryAnotherQuestion={(text) => void sendMessage(text)}
+                />
+              ))}
+              {isTyping && <TypingIndicator />}
+              <div ref={messagesEndRef} className="scroll-mb-[20rem]" />
+            </div>
           )}
-          {isTyping && <TypingIndicator />}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
+        </section>
+      </main>
 
-      {/* Fixed Bottom Dock */}
-      <div className="fixed bottom-14 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-2xl border-t border-slate-800 p-3 sm:p-4">
-        <div className="max-w-2xl mx-auto flex flex-col items-center gap-3">
+      <div
+        className="fixed inset-x-0 z-40 border-t border-slate-800 bg-slate-950/95 px-3 py-3 sm:px-5"
+        style={{ bottom: 'calc(4.15rem + env(safe-area-inset-bottom))' }}
+      >
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-2.5">
           <VoiceButton
             voiceState={voiceState}
-            onStartListening={() => startListening()}
-            onStopListening={() => stopListening()}
-            size="lg"
+            disabled={isTyping || isLoading}
+            busyLabel={isTyping ? t('conversation.thinking') : undefined}
+            onStartListening={() => startListening((completeTranscript) => sendMessage(completeTranscript, true))}
+            onStopListening={stopListening}
+            size={messages.length === 0 ? 'lg' : 'md'}
           />
-          <form onSubmit={handleSendText} className="w-full flex items-center gap-2">
-            <input
-              type="text"
+
+          {voiceState === 'listening' && transcript && (
+            <p className="w-full max-w-3xl rounded-xl border border-emerald-500/30 bg-emerald-950 px-3 py-2 text-start text-sm text-slate-200" role="status" aria-live="polite">
+              {transcript}
+            </p>
+          )}
+
+          <form onSubmit={handleSendText} className="flex w-full items-end gap-2" aria-label={t('assistant.placeholder')}>
+            <label className="sr-only" htmlFor="chat-input">{t('assistant.placeholder')}</label>
+            <textarea
+              id="chat-input"
+              ref={textAreaRef}
+              rows={1}
               value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
+              onChange={(event) => {
+                setTextInput(event.target.value);
+                event.currentTarget.style.height = '3rem';
+                event.currentTarget.style.height = `${Math.min(event.currentTarget.scrollHeight, 144)}px`;
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
+                  event.preventDefault();
+                  submitText(textInput);
+                }
+              }}
               placeholder={t('assistant.placeholder')}
-              aria-label={t('assistant.placeholder')}
-              className="flex-1 bg-slate-900 border border-slate-700 text-slate-100 placeholder-slate-500 rounded-xl px-4 py-3 text-base outline-none focus:border-emerald-400 min-h-[48px]"
               dir={currentConfig.direction}
+              lang={currentConfig.code}
+              maxLength={4000}
+              className="min-h-12 max-h-36 min-w-0 flex-1 resize-none overflow-y-auto rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-base leading-6 text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none"
+              aria-label={t('assistant.placeholder')}
+              disabled={isTyping || isLoading}
             />
             <Button
               type="submit"
               variant="primary"
               size="md"
-              disabled={!textInput.trim()}
+              disabled={!textInput.trim() || isTyping || isLoading}
+              className="w-12 shrink-0 px-0"
               aria-label={t('assistant.send')}
               title={t('assistant.send')}
             >
-              <Send className="w-5 h-5 rtl:rotate-180" />
+              <ArrowUp className="h-5 w-5" aria-hidden="true" />
             </Button>
-            {messages.length > 0 && (
-              <Button
-                type="button"
-                variant="secondary"
-                size="md"
-                onClick={resetConversation}
-                title={t('assistant.reset')}
-                aria-label={t('assistant.reset')}
-              >
-                <RotateCcw className="w-5 h-5 text-slate-400" />
-              </Button>
-            )}
           </form>
         </div>
       </div>
@@ -175,8 +248,9 @@ export default function AssistantPage() {
   return (
     <React.Suspense
       fallback={
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400">
-          <div className="w-8 h-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+        <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-500" role="status">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+          <span className="sr-only">Loading</span>
         </div>
       }
     >

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ChatMessage as ChatMessageType } from '@/types/conversation';
 import { LanguageCode } from '@/types/language';
 import { Bot, User, Mic } from 'lucide-react';
@@ -9,104 +9,129 @@ import { QuestionCard } from './QuestionCard';
 import { ServiceCard } from './ServiceCard';
 import { EligibilityCard } from './EligibilityCard';
 import { DocumentCard } from './DocumentCard';
-import { ApplicationStepCard } from './ApplicationStepCard';
+import { GuideMePanel } from './GuideMePanel';
 import { useLanguage } from '@/hooks/useLanguage';
+import { getLanguageConfig } from '@/lib/i18n/languages';
 
 export interface ChatMessageProps {
   message: ChatMessageType;
   language: LanguageCode;
   onAnswerQuestion?: (fieldKey: string, value: string | number | boolean) => void;
+  onTryAnotherQuestion?: (text: string) => void;
 }
 
-export function ChatMessage({ message, language, onAnswerQuestion }: ChatMessageProps) {
+export function ChatMessage({ message, language, onAnswerQuestion, onTryAnotherQuestion }: ChatMessageProps) {
   const { t } = useLanguage();
+  const [isGuiding, setIsGuiding] = useState(false);
   const isUser = message.role === 'user';
   const isVoice = message.type === 'voice';
+  const messageLanguage = getLanguageConfig(message.language);
+  const canSpeak = !isUser && Boolean(message.content) && message.metadata?.shouldSpeak !== false;
+  const isNoMatch = !isUser && message.content.trim() === t('service.noMatch');
+  const time = new Intl.DateTimeFormat(messageLanguage.locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(message.timestamp));
+  const retryTopics = [
+    'actions.categoryBusiness',
+    'actions.categoryAssistance',
+    'actions.categorySkill',
+    'actions.categoryEducation',
+  ];
 
   return (
-    <div className={`flex items-start gap-3 my-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-      {/* Role Avatar */}
+    <article
+      className={`my-4 flex items-start gap-2.5 sm:gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+      lang={messageLanguage.code}
+      dir={messageLanguage.direction}
+      aria-label={isUser ? t('common.you') : t('appName')}
+    >
       <div
-        className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-md ${
-          isUser
-            ? 'bg-indigo-600 text-white border border-indigo-400'
-            : 'bg-emerald-950 text-emerald-400 border border-emerald-500/40'
+        className={`mt-5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ${
+          isUser ? 'border-indigo-400 bg-indigo-600 text-white' : 'border-emerald-500/30 bg-emerald-950 text-emerald-400'
         }`}
+        aria-hidden="true"
       >
-        {isUser ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
+        {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
       </div>
 
-      <div className={`flex flex-col max-w-[90%] sm:max-w-[80%] ${isUser ? 'items-end' : 'items-start'}`}>
-        {/* Main Bubble with logical direction and RTL support */}
+      <div className={`flex min-w-0 max-w-[calc(100%-2.75rem)] flex-col sm:max-w-[82%] ${isUser ? 'items-end' : 'items-start'}`}>
+        <div className={`mb-1 px-1 text-xs font-semibold ${isUser ? 'text-slate-500' : 'text-emerald-400'}`}>
+          {isUser ? t('common.you') : t('appName')}
+        </div>
         <div
-          className={`chat-bubble ${
+          className={`chat-bubble w-fit max-w-full ${
             isUser
               ? 'chat-bubble-user bg-indigo-600 text-white'
-              : 'chat-bubble-bot bg-slate-900 border border-slate-800 text-slate-100'
+              : 'chat-bubble-bot border border-slate-800 bg-slate-900 text-slate-100'
           }`}
         >
           {isVoice && (
-            <div className="flex items-center gap-1.5 text-xs text-indigo-200 font-semibold mb-1">
-              <Mic className="w-3.5 h-3.5" />
+            <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold text-white">
+              <Mic className="h-3.5 w-3.5" aria-hidden="true" />
               <span>{t('assistant.voiceQuery')}</span>
             </div>
           )}
+          <p className="whitespace-pre-wrap text-start leading-relaxed">{message.content}</p>
 
-          <p className="whitespace-pre-wrap text-start">{message.content}</p>
-
-          {!isUser && message.content && (
-            <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-800/60 pt-2 text-xs">
-              <VoicePlaybackButton text={message.content} language={language} />
-              <span className="text-[10px] text-slate-500">
-                {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
+          {!isUser && (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-slate-800 pt-2">
+              {canSpeak ? <VoicePlaybackButton text={message.content} language={message.language} messageId={message.id} /> : <span />}
+              <time className="text-[11px] text-slate-500" dateTime={message.timestamp}>{time}</time>
             </div>
           )}
         </div>
 
-        {/* Guided Question Card if present */}
-        {message.metadata?.question && onAnswerQuestion && (
-          <div className="w-full mt-2">
-            <QuestionCard
-              question={message.metadata.question}
-              language={language}
-              onAnswer={onAnswerQuestion}
-            />
+        {isNoMatch && onTryAnotherQuestion && (
+          <div className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-900 p-4" role="group" aria-label={t('welcome.chooseNeed')}>
+            <p className="mb-3 text-sm font-semibold text-slate-200">{t('welcome.chooseNeed')}</p>
+            <div className="flex flex-wrap gap-2">
+              {retryTopics.map((key) => {
+                const label = t(key);
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => onTryAnotherQuestion(label)}
+                    className="min-h-11 rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-start text-xs font-semibold text-slate-300 transition-colors hover:border-emerald-500/50 hover:bg-emerald-950 sm:text-sm"
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* Matched Service Card */}
+        {message.metadata?.question && onAnswerQuestion && (
+          <div className="mt-2 w-full">
+            <QuestionCard question={message.metadata.question} language={language} onAnswer={onAnswerQuestion} />
+          </div>
+        )}
+
         {message.metadata?.service && (
-          <div className="w-full mt-2">
+          <div className="mt-2 w-full">
             <ServiceCard
               service={message.metadata.service}
               language={language}
-              matchScore={message.metadata.eligibilityResult?.score}
+              onGuide={() => setIsGuiding(true)}
             />
-
-            {message.metadata.eligibilityResult && (
-              <EligibilityCard
-                result={message.metadata.eligibilityResult}
-                language={language}
-              />
+            {message.metadata.eligibilityResult && message.metadata.service.source.verificationStatus === 'verified' && (
+              <EligibilityCard result={message.metadata.eligibilityResult} language={language} />
             )}
-
-            {message.metadata.service.requiredDocuments && (
-              <DocumentCard
-                documents={message.metadata.service.requiredDocuments}
-                language={language}
-              />
+            {message.metadata.service.source.verificationStatus === 'verified' && message.metadata.service.requiredDocuments.length > 0 && (
+              <DocumentCard documents={message.metadata.service.requiredDocuments} language={language} />
             )}
-
-            {message.metadata.service.applicationSteps && (
-              <ApplicationStepCard
-                steps={message.metadata.service.applicationSteps}
-                language={language}
-              />
-            )}
+            {isGuiding && message.metadata.service.source.verificationStatus === 'verified' ? (
+              <div>
+                <GuideMePanel
+                  service={message.metadata.service}
+                  language={language}
+                  eligibilityResult={message.metadata.eligibilityResult}
+                  onExit={() => setIsGuiding(false)}
+                />
+              </div>
+            ) : null}
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 }

@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useId } from 'react';
 import { EligibilityResult } from '@/types/session';
 import { LanguageCode } from '@/types/language';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { CheckCircle, AlertTriangle, HelpCircle } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, CircleHelp, XCircle } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export interface EligibilityCardProps {
@@ -15,56 +15,68 @@ export interface EligibilityCardProps {
 
 export function EligibilityCard({ result }: EligibilityCardProps) {
   const { t } = useLanguage();
-
-  const statusKey = result.isEligible
+  const headingId = useId();
+  const status = result.status ?? (result.isEligible
+    ? 'POTENTIALLY_ELIGIBLE'
+    : result.failedRules.length > 0
+      ? 'NOT_ELIGIBLE'
+      : 'MORE_INFORMATION_REQUIRED');
+  const statusKey = status === 'POTENTIALLY_ELIGIBLE'
     ? 'eligibility.potentiallyEligible'
-    : result.failedRules.length > 0
+    : status === 'NOT_ELIGIBLE'
       ? 'eligibility.notEligible'
-      : 'eligibility.moreInformationRequired';
-  const statusVariant = result.isEligible
+      : status === 'UNKNOWN'
+        ? 'eligibility.unknown'
+        : 'eligibility.moreInformationRequired';
+  const statusVariant = status === 'POTENTIALLY_ELIGIBLE'
     ? 'success'
-    : result.failedRules.length > 0
-      ? 'warning'
-      : 'warning';
+    : status === 'NOT_ELIGIBLE'
+      ? 'danger'
+      : status === 'UNKNOWN'
+        ? 'neutral'
+        : 'warning';
+  const StatusIcon = status === 'POTENTIALLY_ELIGIBLE'
+    ? CheckCircle2
+    : status === 'NOT_ELIGIBLE'
+      ? XCircle
+      : status === 'UNKNOWN'
+        ? CircleHelp
+        : AlertTriangle;
 
   return (
-    <Card className="border-slate-800 bg-slate-900/90 my-3">
-      <div className="flex items-center justify-between gap-2 mb-3">
-        <h3 className="text-base sm:text-lg font-bold text-slate-100">{t('eligibility.title')}</h3>
-        <Badge variant={statusVariant}>{t(statusKey)}</Badge>
+    <Card className="my-3 bg-slate-900" role="region" aria-labelledby={headingId}>
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h3 id={headingId} className="text-base font-bold text-slate-100 sm:text-lg">
+          {t('eligibility.title')}
+        </h3>
+        <Badge variant={statusVariant} className="max-w-full whitespace-normal leading-snug">
+          <StatusIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>{t(statusKey)}</span>
+        </Badge>
       </div>
+      <p className="mt-3 rounded-xl border border-slate-800 bg-slate-950 px-3.5 py-3 text-sm leading-relaxed text-slate-500">
+        {t('eligibility.disclaimer')}
+      </p>
 
-      {/* Matched conditions */}
       {result.matchedRules.length > 0 && (
-        <div className="space-y-2 mt-3">
-          <h4 className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-            {t('eligibility.matchedTitle')}
-          </h4>
+        <div className="mt-4 space-y-2">
+          <h4 className="text-xs font-bold text-emerald-400">{t('eligibility.matchedTitle')}</h4>
           {result.matchedRules.map((rule) => (
-            <div
-              key={rule.ruleId}
-              className="flex items-start gap-2.5 p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs sm:text-sm text-emerald-200"
-            >
-              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+            <div key={rule.ruleId} className="flex items-start gap-2.5 rounded-xl border border-emerald-500/20 bg-emerald-950 px-3 py-2.5 text-sm leading-relaxed text-slate-300">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" aria-hidden="true" />
               <span>{rule.explanation}</span>
             </div>
           ))}
         </div>
       )}
 
-      {/* Missing information */}
       {result.missingInformationFields.length > 0 && (
-        <div className="mt-3">
-          <h4 className="text-xs font-semibold text-amber-400 mb-1.5 uppercase tracking-wider">
-            {t('eligibility.missingInfoTitle')}
-          </h4>
-          <div className="space-y-1.5">
+        <div className="mt-4">
+          <h4 className="mb-2 text-xs font-bold text-amber-300">{t('eligibility.missingInfoTitle')}</h4>
+          <div className="space-y-2">
             {result.missingInformationFields.map((field) => (
-              <div
-                key={field}
-                className="flex items-center gap-2 p-2 rounded-lg bg-amber-950/30 border border-amber-500/30 text-xs text-amber-200"
-              >
-                <HelpCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <div key={field} className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-950 px-3 py-2 text-sm leading-relaxed text-slate-300">
+                <CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" aria-hidden="true" />
                 <span>{t('documents.needToConfirm', { field })}</span>
               </div>
             ))}
@@ -72,19 +84,13 @@ export function EligibilityCard({ result }: EligibilityCardProps) {
         </div>
       )}
 
-      {/* Failed conditions if any */}
       {result.failedRules.length > 0 && (
-        <div className="mt-3">
-          <h4 className="text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wider">
-            {t('eligibility.failedTitle')}
-          </h4>
+        <div className="mt-4">
+          <h4 className="mb-2 text-xs font-bold text-slate-500">{t('eligibility.failedTitle')}</h4>
           <div className="space-y-2">
             {result.failedRules.map((rule) => (
-              <div
-                key={rule.ruleId}
-                className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400"
-              >
-                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <div key={rule.ruleId} className="flex items-start gap-2.5 rounded-xl border border-red-500/30 bg-red-950/40 px-3 py-2.5 text-sm leading-relaxed text-slate-300">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" aria-hidden="true" />
                 <span>{rule.explanation}</span>
               </div>
             ))}

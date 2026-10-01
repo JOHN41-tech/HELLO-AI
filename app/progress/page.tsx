@@ -1,138 +1,136 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Navigation } from '@/components/layout/Navigation';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { ShieldCheck, Trash2, CheckCircle2, User, FileText } from 'lucide-react';
+import { ShieldCheck, Trash2, CheckCircle2, UserRound, FileText } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useSession } from '@/hooks/useSession';
 
 export default function ProgressPage() {
   const { language, currentConfig, setLanguage, t } = useLanguage();
-  const { session, clearSession } = useSession(language);
+  const { session, isLoading, clearSession } = useSession(language);
   const [notification, setNotification] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!notification) return;
+    const timer = window.setTimeout(() => setNotification(null), 4000);
+    return () => window.clearTimeout(timer);
+  }, [notification]);
 
   const handleClear = async () => {
     await clearSession();
     setNotification(t('actions.sessionCleared'));
-    setTimeout(() => setNotification(null), 4000);
   };
 
-  const answersList = Object.entries(session.answers);
-  const demoList = Object.entries(session.demographics);
+  const detailRows = [
+    { label: t('profile.language'), value: currentConfig.nativeName },
+    { label: t('profile.age'), value: session.demographics.age === undefined ? t('common.notProvided') : String(session.demographics.age) },
+    { label: t('profile.state'), value: session.demographics.state || t('common.notProvided') },
+    { label: t('profile.occupation'), value: session.demographics.occupation || t('common.notProvided') },
+  ];
+  const answerLabel = (field: string) => {
+    const knownLabels: Record<string, string> = {
+      age: t('profile.age'),
+      state: t('profile.state'),
+      occupation: t('profile.occupation'),
+      annualIncome: t('profile.annualIncome'),
+      income: t('profile.annualIncome'),
+      gender: t('profile.gender'),
+      projectStatus: t('profile.projectStatus'),
+      businessStatus: t('profile.projectStatus'),
+    };
+    return knownLabels[field] ?? field.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase());
+  };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col" dir={currentConfig.direction} lang={currentConfig.code}>
+    <div className="flex min-h-screen flex-col bg-slate-950" dir={currentConfig.direction} lang={currentConfig.code}>
       <Header currentLanguage={language} onLanguageChange={setLanguage} />
-
-      <main className="flex-1 max-w-3xl w-full mx-auto px-4 py-6 space-y-6">
-        {/* Banner */}
-        <div className="flex items-center gap-3 p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl">
-          <div className="w-12 h-12 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
-            <User className="w-6 h-6" />
+      <main id="main-content" className="mx-auto w-full max-w-3xl flex-1 space-y-5 px-4 pb-28 pt-6 sm:px-6 sm:pt-8">
+        <header className="flex items-center gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-950 text-emerald-400">
+            <UserRound className="h-6 w-6" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-100">{t('nav.progress')}</h1>
-            <p className="text-xs text-slate-400">
-              {t('progress.sessionId')}: <code className="text-emerald-300 font-mono">{session.sessionId}</code>
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-400">{t('app.navigatorLabel')}</p>
+            <h1 className="mt-1 text-2xl font-bold text-slate-100">{t('nav.progress')}</h1>
           </div>
-        </div>
+        </header>
 
         {notification && (
-          <div className="p-4 rounded-xl bg-emerald-950 border border-emerald-500/40 text-emerald-200 text-sm font-semibold flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <div className="flex items-start gap-2 rounded-xl border border-emerald-500/30 bg-emerald-950 px-4 py-3 text-sm leading-relaxed text-emerald-400" role="status" aria-live="polite">
+            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
             <span>{notification}</span>
           </div>
         )}
 
-        {/* Collected Information */}
-        <Card className="border-slate-800 bg-slate-900/90 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h2 className="text-base font-bold text-slate-200">{t('progress.profileTitle')}</h2>
-            <Badge variant="info">{t('progress.phaseBadge')}</Badge>
+        {isLoading ? (
+          <div className="rounded-2xl border border-slate-800 bg-slate-900 px-4 py-8 text-center text-sm text-slate-500" role="status" aria-live="polite">
+            {t('service.loading')}
           </div>
+        ) : (
+          <>
+            <Card className="space-y-4 bg-slate-900" role="region" aria-labelledby="shared-info-title">
+              <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+                <FileText className="h-5 w-5 text-emerald-400" aria-hidden="true" />
+                <h2 id="shared-info-title" className="text-base font-bold text-slate-100 sm:text-lg">{t('progress.profileTitle')}</h2>
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <span className="text-xs text-slate-400 block">{t('profile.language')}</span>
-              <strong className="text-emerald-400 uppercase font-mono">{session.language}</strong>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <span className="text-xs text-slate-400 block">{t('profile.age')}</span>
-              <strong className="text-slate-100">
-                {session.demographics.age !== undefined && session.demographics.age !== null
-                  ? String(session.demographics.age)
-                  : t('common.notProvided')}
-              </strong>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <span className="text-xs text-slate-400 block">{t('profile.state')}</span>
-              <strong className="text-slate-100">{session.demographics.state || t('common.notProvided')}</strong>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <span className="text-xs text-slate-400 block">{t('profile.occupation')}</span>
-              <strong className="text-slate-100">{session.demographics.occupation || t('common.notProvided')}</strong>
-            </div>
-          </div>
-
-          {answersList.length > 0 && (
-            <div className="mt-4 pt-3 border-t border-slate-800">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                {t('profile.userResponses')}
-              </h3>
-              <div className="space-y-1.5">
-                {answersList.map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="flex justify-between items-center p-2 rounded-lg bg-slate-950 text-xs text-slate-300 border border-slate-800"
-                  >
-                    <span className="font-semibold text-slate-400">{key}:</span>
-                    <span className="text-emerald-300 font-medium">{String(value)}</span>
+              <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {detailRows.map(({ label, value }) => (
+                  <div key={label} className="rounded-xl border border-slate-800 bg-slate-950 px-3.5 py-3">
+                    <dt className="text-xs font-medium text-slate-500">{label}</dt>
+                    <dd className="mt-1 break-words text-sm font-semibold text-slate-100">{value}</dd>
                   </div>
                 ))}
+              </dl>
+
+              {Object.keys(session.answers).length > 0 ? (
+                <div className="border-t border-slate-800 pt-4">
+                  <h3 className="mb-2 text-sm font-semibold text-slate-300">{t('profile.userResponses')}</h3>
+                  <dl className="space-y-2">
+                    {Object.entries(session.answers).map(([key, value]) => (
+                      <div key={key} className="flex flex-wrap items-start justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950 px-3.5 py-3 text-sm">
+                        <dt className="font-medium text-slate-500">{answerLabel(key)}</dt>
+                        <dd className="max-w-full break-words font-semibold text-slate-200">{String(value)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              ) : (
+                <p className="rounded-xl bg-slate-950 px-3.5 py-3 text-sm text-slate-500">{t('common.notProvided')}</p>
+              )}
+            </Card>
+
+            <Card className="space-y-4 border-teal-500/30 bg-slate-900" role="region" aria-labelledby="privacy-heading">
+              <div className="flex items-center gap-2 text-slate-100">
+                <ShieldCheck className="h-5 w-5 text-teal-400" aria-hidden="true" />
+                <h2 id="privacy-heading" className="text-base font-bold sm:text-lg">{t('privacy.title')}</h2>
               </div>
-            </div>
-          )}
-        </Card>
-
-        {/* Privacy & Security Foundation */}
-        <Card className="border-teal-500/30 bg-slate-900/90 space-y-3">
-          <div className="flex items-center gap-2 text-teal-300 font-bold">
-            <ShieldCheck className="w-5 h-5" />
-            <span>{t('privacy.title')}</span>
-          </div>
-
-          <p className="text-xs text-slate-300 leading-relaxed">
-            {t('privacy.intro')}
-          </p>
-
-          <ul className="list-disc list-inside text-xs text-slate-400 space-y-1 ps-1">
-            <li>{t('privacy.passwords')}</li>
-            <li>{t('privacy.bankPasswords')}</li>
-            <li>{t('privacy.aadhaar')}</li>
-          </ul>
-
-          <div className="pt-3 border-t border-slate-800">
-            <Button
-              variant="outline"
-              size="md"
-              onClick={handleClear}
-              className="border-red-500/40 text-red-300 hover:bg-red-950/40"
-            >
-              <Trash2 className="w-4 h-4 text-red-400" />
-              <span>{t('actions.clearSession')}</span>
-            </Button>
-          </div>
-        </Card>
+              <p className="text-sm leading-relaxed text-slate-300">{t('privacy.intro')}</p>
+              <ul className="list-disc space-y-1.5 ps-5 text-sm leading-relaxed text-slate-500">
+                <li>{t('privacy.passwords')}</li>
+                <li>{t('privacy.bankPasswords')}</li>
+                <li>{t('privacy.aadhaar')}</li>
+              </ul>
+              <div className="border-t border-slate-800 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="md"
+                  onClick={handleClear}
+                  className="border-red-500/40 text-red-400 hover:bg-red-950/40"
+                >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  <span>{t('actions.clearSession')}</span>
+                </Button>
+              </div>
+            </Card>
+          </>
+        )}
       </main>
-
       <Navigation />
     </div>
   );

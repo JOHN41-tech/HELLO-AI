@@ -6,15 +6,65 @@
       'Noto Sans Kannada', 'Noto Sans Malayalam', 'Noto Sans Gujarati', 'Noto Sans Bengali',
       'Noto Sans Gurmukhi', 'Noto Nastaliq Urdu', system-ui, -apple-system, sans-serif;
 
-    --accent-emerald: #10b981;
-    --accent-teal: #14b8a6;
-    --accent-amber: #f59e0b;
+    --hello-canvas: #f7f6f1;
+    --hello-surface: #fffefa;
+    --hello-surface-raised: #f0eee7;
+    --hello-surface-hover: #e9e7de;
+    --hello-ink: #26372f;
+    --hello-body: #42544b;
+    --hello-muted: #606b63;
+    --hello-border: #dddcd2;
+    --hello-primary: #356a53;
+    --hello-primary-hover: #285540;
+    --hello-primary-soft: #e7f0e9;
+    --hello-clay: #9a5a40;
+    --hello-clay-soft: #f5e9e2;
+    --hello-success-bg: #e6f1e8;
+    --hello-success-ink: #2d6645;
+    --hello-warning-bg: #faf0d9;
+    --hello-warning-ink: #765716;
+    --hello-danger-bg: #f8e8e3;
+    --hello-danger-ink: #8c4034;
+    --hello-focus: #166b51;
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--hello-canvas);
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--hello-canvas);
+    color: var(--hello-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: #c9dfd0;
+    color: #1f3329;
   }
 
   .high-contrast {
-    --accent-emerald: #00ff66;
-    --accent-teal: #00ffff;
-    --accent-amber: #ffff00;
+    --hello-canvas: #ffffff;
+    --hello-surface: #ffffff;
+    --hello-surface-raised: #f1f1f1;
+    --hello-surface-hover: #e5e5e5;
+    --hello-ink: #101b15;
+    --hello-body: #202b25;
+    --hello-muted: #3d4841;
+    --hello-border: #555f59;
+    --hello-primary: #005c35;
+    --hello-primary-hover: #004525;
+    --hello-primary-soft: #d9f0e2;
+    --hello-focus: #003d23;
   }
 
   .font-scale-lg {
@@ -22,80 +72,103 @@
   }
 }
 
-body {
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
+/* Warm semantic aliases keep legacy utility usage consistent while components are incrementally refined. */
+[class~="bg-slate-950"] { background-color: var(--hello-canvas) !important; }
+[class~="bg-slate-950/95"] { background-color: color-mix(in srgb, var(--hello-canvas) 95%, transparent) !important; }
+[class~="bg-slate-950/90"] { background-color: color-mix(in srgb, var(--hello-canvas) 90%, transparent) !important; }
+[class~="bg-slate-950/80"] { background-color: color-mix(in srgb, var(--hello-canvas) 80%, transparent) !important; }
+[class~="bg-slate-950/60"] { background-color: color-mix(in srgb, var(--hello-canvas) 72%, transparent) !important; }
+[class~="bg-slate-950/50"] { background-color: color-mix(in srgb, var(--hello-canvas) 62%, transparent) !important; }
+[class~="bg-slate-950/40"] { background-color: color-mix(in srgb, var(--hello-canvas) 52%, transparent) !important; }
+[class~="bg-slate-900"], [class~="bg-slate-900/95"], [class~="bg-slate-900/90"] { background-color: var(--hello-surface) !important; }
+[class~="bg-slate-900/80"] { background-color: color-mix(in srgb, var(--hello-surface) 88%, transparent) !important; }
+[class~="bg-slate-900/60"] { background-color: color-mix(in srgb, var(--hello-surface) 70%, transparent) !important; }
+[class~="bg-slate-800"], [class~="bg-slate-800/80"], [class~="bg-slate-800/60"] { background-color: var(--hello-surface-raised) !important; }
+[class~="bg-slate-700"], [class~="bg-slate-700/80"] { background-color: var(--hello-surface-hover) !important; }
+[class~="text-slate-50"], [class~="text-slate-100"] { color: var(--hello-ink) !important; }
+[class~="text-slate-200"] { color: #34473d !important; }
+[class~="text-slate-300"] { color: var(--hello-body) !important; }
+[class~="text-slate-400"], [class~="text-slate-500"] { color: var(--hello-muted) !important; }
+[class~="border-slate-800"], [class~="border-slate-800/80"], [class~="border-slate-800/90"] { border-color: var(--hello-border) !important; }
+[class~="border-slate-700"], [class~="border-slate-700/80"] { border-color: #d1d0c6 !important; }
+[class~="hover:bg-slate-800"]:hover, [class~="hover:bg-slate-800/80"]:hover, [class~="hover:bg-slate-800/60"]:hover { background-color: var(--hello-surface-hover) !important; }
+[class~="hover:bg-slate-700"]:hover, [class~="hover:bg-slate-700/80"]:hover { background-color: #e3e1d8 !important; }
+[class~="hover:text-slate-200"]:hover, [class~="hover:text-white"]:hover { color: var(--hello-ink) !important; }
 
-/* RTL support: Urdu (and any future RTL locale).
-   Logical properties and direction-aware layout classes ensure
-   proper mirroring in both LTR and RTL scripts. */
+[class~="bg-emerald-950"], [class~="bg-emerald-950/80"], [class~="bg-emerald-950/60"], [class~="bg-emerald-950/50"], [class~="bg-emerald-950/40"], [class~="bg-emerald-950/30"], [class~="bg-emerald-950/20"] { background-color: var(--hello-primary-soft) !important; }
+[class~="bg-emerald-900"], [class~="bg-emerald-900/80"] { background-color: #dce9df !important; }
+[class~="bg-emerald-600"], [class~="bg-emerald-500"] { background-color: var(--hello-primary) !important; }
+[class~="hover:bg-emerald-900"]:hover { background-color: #d9e6dc !important; }
+[class~="hover:bg-emerald-500"]:hover { background-color: var(--hello-primary-hover) !important; }
+[class~="text-emerald-400"], [class~="text-emerald-300"] { color: var(--hello-primary) !important; }
+[class~="text-emerald-200"] { color: #3e644f !important; }
+[class~="border-emerald-500/50"], [class~="border-emerald-500/40"], [class~="border-emerald-500/30"], [class~="border-emerald-500/20"], [class~="border-emerald-400"] { border-color: #b8d0bf !important; }
+[class~="hover:border-emerald-500/60"]:hover, [class~="hover:border-emerald-500/50"]:hover { border-color: #7ea88b !important; }
 
-/* Chat bubble logical direction styles */
+[class~="bg-teal-950"], [class~="bg-teal-950/80"], [class~="bg-teal-950/40"] { background-color: #e6f1ef !important; }
+[class~="bg-teal-500"] { background-color: #477d75 !important; }
+[class~="text-teal-400"], [class~="text-teal-300"] { color: #376a63 !important; }
+[class~="border-teal-500/40"], [class~="border-teal-500/30"] { border-color: #b9d8d2 !important; }
+
+[class~="bg-indigo-600"] { background-color: var(--hello-clay) !important; }
+[class~="bg-indigo-950/80"], [class~="bg-indigo-950/50"] { background-color: #eeeaf3 !important; }
+[class~="text-indigo-300"], [class~="text-indigo-400"] { color: #625276 !important; }
+[class~="border-indigo-400"], [class~="border-indigo-500/40"] { border-color: #d3c9dc !important; }
+[class~="text-indigo-200"] { color: #625276 !important; }
+
+[class~="bg-amber-950"], [class~="bg-amber-950/80"], [class~="bg-amber-950/60"], [class~="bg-amber-950/40"], [class~="bg-amber-950/30"] { background-color: var(--hello-warning-bg) !important; }
+[class~="text-amber-300"], [class~="text-amber-400"] { color: var(--hello-warning-ink) !important; }
+[class~="border-amber-500/40"], [class~="border-amber-500/30"] { border-color: #e4d09e !important; }
+[class~="text-red-400"], [class~="text-red-300"] { color: #a74538 !important; }
+[class~="bg-red-950/40"] { background-color: var(--hello-danger-bg) !important; }
+[class~="border-red-500/40"] { border-color: #e6c2b8 !important; }
+
+[class~="shadow-xl"], [class~="shadow-2xl"], [class~="shadow-lg"] { box-shadow: 0 8px 22px rgb(45 57 48 / 8%) !important; }
+[class~="shadow-md"], [class~="shadow-sm"] { box-shadow: 0 3px 10px rgb(45 57 48 / 6%) !important; }
+
 .chat-bubble {
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
-  line-height: 1.625;
+  border-radius: 1.15rem;
+  padding: 1rem 1.125rem;
+  box-shadow: 0 2px 10px rgb(45 57 48 / 6%);
+  line-height: 1.65;
   font-size: 1rem;
+  overflow-wrap: anywhere;
 }
+.chat-bubble-user { border-start-end-radius: 0.35rem; }
+.chat-bubble-bot { border-start-start-radius: 0.35rem; }
+[dir="ltr"] .chat-bubble-user { border-top-right-radius: 0.35rem; border-top-left-radius: 1.15rem; }
+[dir="rtl"] .chat-bubble-user { border-top-left-radius: 0.35rem; border-top-right-radius: 1.15rem; }
+[dir="ltr"] .chat-bubble-bot { border-top-left-radius: 0.35rem; border-top-right-radius: 1.15rem; }
+[dir="rtl"] .chat-bubble-bot { border-top-right-radius: 0.35rem; border-top-left-radius: 1.15rem; }
 
-.chat-bubble-user {
-  border-start-end-radius: 0.125rem;
-}
-
-.chat-bubble-bot {
-  border-start-start-radius: 0.125rem;
-}
-
-/* Explicit direction fallbacks for environments where CSS logical border radius needs explicit mapping */
-[dir="ltr"] .chat-bubble-user {
-  border-top-right-radius: 0.125rem;
-  border-top-left-radius: 1rem;
-}
-[dir="rtl"] .chat-bubble-user {
-  border-top-left-radius: 0.125rem;
-  border-top-right-radius: 1rem;
-}
-
-[dir="ltr"] .chat-bubble-bot {
-  border-top-left-radius: 0.125rem;
-  border-top-right-radius: 1rem;
-}
-[dir="rtl"] .chat-bubble-bot {
-  border-top-right-radius: 0.125rem;
-  border-top-left-radius: 1rem;
-}
-
-/* Accessible focus ring — works across all scripts */
 *:focus-visible {
-  outline: 3px solid var(--accent-emerald);
+  outline: 3px solid var(--hello-focus);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
-/* Voice button ripple */
-@keyframes mic-ripple {
-  0% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6), 0 0 0 0 rgba(16, 185, 129, 0.4);
-  }
-  70% {
-    box-shadow: 0 0 0 24px rgba(16, 185, 129, 0), 0 0 0 40px rgba(16, 185, 129, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0), 0 0 0 0 rgba(16, 185, 129, 0);
-  }
-}
-.animate-mic-pulse {
-  animation: mic-ripple 1.8s infinite ease-out;
-}
+#main-content { scroll-margin-top: 5rem; }
 
-/* Typing dot bounce */
+@keyframes mic-ripple {
+  0% { box-shadow: 0 0 0 0 rgb(53 106 83 / 24%), 0 0 0 0 rgb(53 106 83 / 14%); }
+  70% { box-shadow: 0 0 0 16px rgb(53 106 83 / 0%), 0 0 0 28px rgb(53 106 83 / 0%); }
+  100% { box-shadow: 0 0 0 0 rgb(53 106 83 / 0%), 0 0 0 0 rgb(53 106 83 / 0%); }
+}
+.animate-mic-pulse { animation: mic-ripple 1.8s infinite ease-out; }
+
 @keyframes typing-bounce {
   0%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-8px); }
+  40% { transform: translateY(-4px); }
 }
 .typing-dot { animation: typing-bounce 1.4s infinite ease-in-out both; }
 .typing-dot:nth-child(1) { animation-delay: -0.32s; }
 .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

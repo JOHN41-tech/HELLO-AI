@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { SunMoon, Type, Volume2 } from 'lucide-react';
+import { SunMoon, Type } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export function AccessibilityToolbar() {
@@ -10,46 +10,39 @@ export function AccessibilityToolbar() {
   const [isLargeFont, setIsLargeFont] = useState(false);
 
   useEffect(() => {
-    if (isHighContrast) {
-      document.documentElement.classList.add('high-contrast');
-    } else {
-      document.documentElement.classList.remove('high-contrast');
-    }
+    document.documentElement.classList.toggle('high-contrast', isHighContrast);
   }, [isHighContrast]);
 
   useEffect(() => {
-    if (isLargeFont) {
-      document.documentElement.classList.add('font-scale-lg');
-    } else {
-      document.documentElement.classList.remove('font-scale-lg');
-    }
+    document.documentElement.classList.toggle('font-scale-lg', isLargeFont);
   }, [isLargeFont]);
 
   return (
-    <div className="flex items-center gap-2 text-xs bg-slate-900/80 backdrop-blur border border-slate-800 rounded-full px-3 py-1.5 shadow-sm">
+    <div className="flex items-center gap-1 rounded-xl border border-slate-800 bg-slate-900 p-1" role="group">
       <button
-        onClick={() => setIsHighContrast(!isHighContrast)}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-colors ${
-          isHighContrast ? 'bg-amber-400 text-slate-950 font-bold' : 'text-slate-300 hover:text-white'
+        type="button"
+        onClick={() => setIsHighContrast((value) => !value)}
+        className={`inline-flex min-h-10 min-w-10 items-center justify-center gap-1.5 rounded-lg px-2 text-xs font-semibold transition-colors sm:px-2.5 ${
+          isHighContrast ? 'bg-amber-400 text-slate-950' : 'text-slate-500 hover:bg-slate-800 hover:text-slate-200'
         }`}
         title={t('accessibility.highContrast')}
         aria-label={t('accessibility.highContrast')}
+        aria-pressed={isHighContrast}
       >
-        <SunMoon className="w-4 h-4" />
+        <SunMoon className="h-4 w-4 shrink-0" aria-hidden="true" />
         <span className="hidden sm:inline">{t('accessibility.highContrast')}</span>
       </button>
-
-      <div className="w-px h-4 bg-slate-700" />
-
       <button
-        onClick={() => setIsLargeFont(!isLargeFont)}
-        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-colors ${
-          isLargeFont ? 'bg-emerald-500 text-slate-950 font-bold' : 'text-slate-300 hover:text-white'
+        type="button"
+        onClick={() => setIsLargeFont((value) => !value)}
+        className={`inline-flex min-h-10 min-w-10 items-center justify-center gap-1.5 rounded-lg px-2 text-xs font-semibold transition-colors sm:px-2.5 ${
+          isLargeFont ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-800 hover:text-slate-200'
         }`}
-        title={t('accessibility.fontIncrease')}
-        aria-label={t('accessibility.fontIncrease')}
+        title={isLargeFont ? t('accessibility.fontNormal') : t('accessibility.fontIncrease')}
+        aria-label={isLargeFont ? t('accessibility.fontNormal') : t('accessibility.fontIncrease')}
+        aria-pressed={isLargeFont}
       >
-        <Type className="w-4 h-4" />
+        <Type className="h-4 w-4 shrink-0" aria-hidden="true" />
         <span className="hidden sm:inline">
           {isLargeFont ? t('accessibility.fontNormal') : t('accessibility.fontIncrease')}
         </span>

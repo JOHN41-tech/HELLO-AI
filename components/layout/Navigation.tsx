@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Mic, Grid, UserCheck } from 'lucide-react';
+import { Home, Mic, Grid2X2, UserRound } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export function Navigation() {
@@ -11,18 +11,19 @@ export function Navigation() {
   const { t } = useLanguage();
 
   const navItems = [
-    { href: '/', label: t('nav.home'), icon: Home },
-    { href: '/assistant', label: t('nav.assistant'), icon: Mic },
-    { href: '/services', label: t('nav.services'), icon: Grid },
-    { href: '/progress', label: t('nav.progress'), icon: UserCheck },
+    { href: '/', label: t('nav.home'), mobileLabel: undefined, icon: Home },
+    { href: '/assistant', label: t('nav.assistant'), mobileLabel: undefined, icon: Mic },
+    { href: '/services', label: t('nav.services'), mobileLabel: t('nav.servicesShort'), icon: Grid2X2 },
+    { href: '/progress', label: t('nav.progress'), mobileLabel: undefined, icon: UserRound },
   ];
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-2xl border-t border-slate-800/90 py-2 px-4 md:py-3"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-800 bg-slate-950/95 px-2 pt-2"
+      style={{ paddingBottom: 'max(.5rem, env(safe-area-inset-bottom))' }}
       aria-label={t('nav.label')}
     >
-      <div className="max-w-md mx-auto flex items-center justify-around">
+      <div className="mx-auto flex max-w-xl items-center justify-around gap-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -31,14 +32,22 @@ export function Navigation() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-1 min-h-[48px] justify-center px-3 py-1 rounded-xl transition-all ${
+              aria-current={isActive ? 'page' : undefined}
+              className={`flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-1.5 text-center transition-colors sm:min-h-14 sm:flex-row sm:gap-2 sm:px-3 ${
                 isActive
-                  ? 'text-emerald-400 font-extrabold bg-emerald-950/50 scale-105'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-emerald-950 text-emerald-400 font-bold'
+                  : 'text-slate-500 hover:bg-slate-800 hover:text-slate-200'
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-400' : 'text-slate-400'}`} />
-              <span className="text-[11px] leading-tight">{item.label}</span>
+              <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
+              {item.mobileLabel ? (
+                <>
+                  <span className="max-w-full truncate text-[10px] leading-tight sm:hidden">{item.mobileLabel}</span>
+                  <span className="hidden max-w-full truncate text-xs sm:inline">{item.label}</span>
+                </>
+              ) : (
+                <span className="max-w-full truncate text-[10px] leading-tight sm:text-xs">{item.label}</span>
+              )}
             </Link>
           );
         })}

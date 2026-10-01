@@ -10,13 +10,11 @@ export default function ServicesPage() {
   const { language, currentConfig, setLanguage } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col" dir={currentConfig.direction} lang={currentConfig.code}>
+    <div className="flex min-h-screen flex-col bg-slate-950" dir={currentConfig.direction} lang={currentConfig.code}>
       <Header currentLanguage={language} onLanguageChange={setLanguage} />
-
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6">
+      <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 pb-28 pt-6 sm:px-6 sm:pt-8">
         <ServiceCatalog language={language} />
       </main>
-
       <Navigation />
     </div>
   );

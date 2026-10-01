@@ -9,7 +9,7 @@ describe('Validation Schemas', () => {
   it('should validate valid chat input', () => {
     const validPayload = {
       message: 'I want help starting a business.',
-      sessionId: 'session_123',
+      sessionId: 'session_00000000-0000-4000-8000-000000000003',
       language: 'en',
     };
 
@@ -20,7 +20,7 @@ describe('Validation Schemas', () => {
   it('should reject empty chat message', () => {
     const invalidPayload = {
       message: '',
-      sessionId: 'session_123',
+      sessionId: 'session_00000000-0000-4000-8000-000000000003',
       language: 'en',
     };
 
@@ -68,7 +68,7 @@ describe('Guided Answers (Phase 1.5)', () => {
 describe('Chat Input — message or structured answer (Phase 1.5)', () => {
   it('should accept a chat payload whose only payload is a structured answer', () => {
     const result = ChatInputSchema.safeParse({
-      sessionId: 'session_123',
+      sessionId: 'session_00000000-0000-4000-8000-000000000003',
       language: 'ta',
       answer: { fieldKey: 'occupation', value: 'tailoring' },
     });
@@ -77,7 +77,7 @@ describe('Chat Input — message or structured answer (Phase 1.5)', () => {
 
   it('should reject a payload with neither a message nor an answer', () => {
     const result = ChatInputSchema.safeParse({
-      sessionId: 'session_123',
+      sessionId: 'session_00000000-0000-4000-8000-000000000003',
       language: 'en',
     });
     expect(result.success).toBe(false);
@@ -85,7 +85,7 @@ describe('Chat Input — message or structured answer (Phase 1.5)', () => {
 
   it('should reject a structured answer sent as a bare string', () => {
     const result = ChatInputSchema.safeParse({
-      sessionId: 'session_123',
+      sessionId: 'session_00000000-0000-4000-8000-000000000003',
       language: 'en',
       answer: 'continue',
     });

@@ -18,7 +18,7 @@ HELLO AI understands the intent, asks only essential information, matches verifi
 
 ---
 
-## 🚀 Key Features in Phase 1 & 1.5 Architecture
+## 🚀 Key Features
 
 1. **Voice-First & Accessible UI**: Visually prominent, pulsing hero microphone with speech-to-text (`SpeechRecognition`) and text-to-speech (`SpeechSynthesis`) audio playback across all Indian locales.
 2. **Pan-Indian Multilingual System (Phase 1.5)**: Full, first-class support for **13 canonical languages (12 Indian languages + English)**:
@@ -42,7 +42,7 @@ HELLO AI understands the intent, asks only essential information, matches verifi
 7. **Structured Guided Answers**: Questions and answers pass as structured typed payloads (`fieldKey`, `value`) rather than translated conversational text, preserving backend data integrity.
 8. **Deterministic Eligibility Engine**: Evaluates age, state, income, gender, and occupation rules using AND/OR logic, comparison operators (`>=`, `<=`, `==`, `in`, `boolean_true`), producing percentage match scores and clear explanations.
 9. **Verified Service Data Architecture**: Structured government scheme models with verified authority metadata, eligibility criteria, document checklists with alternatives, and step-by-step guides.
-10. **AI Service Provider Abstraction**: `AIService` interface decoupling frontend components from model implementation (`MockAIService` in Phase 1/1.5, `GeminiAIService` in Phase 2).
+10. **Server-side Gemini Conversation AI (Phase 2)**: Google Gen AI SDK structured JSON output, Zod validation, retry/fallback, multilingual conversation context, and a server-only API key.
 11. **Privacy-First Session Management**: Privacy controls with 1-click session data deletion. Strict server-side rejection of invalid/unsupported language codes. Zero collection of passwords, OTPs, or Aadhaar numbers.
 12. **Accessibility & High Contrast**: Built for low-literacy & first-time smartphone users with 48px+ touch targets, high-contrast mode, text scaling, and clean font hierarchies.
 
@@ -105,11 +105,15 @@ HELLO AI/
 
 ### Installation
 ```bash
-# Clone or navigate to project directory
-cd "HELLO AI"
+# Navigate to the project directory
+cd HELLO-AI
 
 # Install dependencies
 npm install
+
+# Create a local environment file and add your Gemini API key
+cp .env.example .env.local
+# Edit .env.local and set GEMINI_API_KEY (never commit .env.local)
 
 # Run development server
 npm run dev
@@ -122,7 +126,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 🧪 Running Tests & Build Verification
 
 ```bash
-# Run unit & regression test suites (Vitest — 6 suites, 254+ tests)
+# Run unit & regression test suites (Vitest)
 npm run test
 
 # Run TypeScript type validation
@@ -139,33 +143,34 @@ The test suites validate:
 - **`regression.test.ts`**: Interpolation, localized fallback, shared language switching, locale persistence, structured-answer persistence, no state loss on language switches, session language rejection, explicit-language detection precedence.
 - **`locales.test.ts`**: Strict JSON parsing, U+FFFD prevention, 100% key parity, placeholder parity, and non-empty translation values across all 13 locales.
 - **`i18n.test.ts`**: Canonical language configuration, BCP-47 locale mapping, text direction, script detection, and key resolution.
-- **`eligibility.test.ts`**: Deterministic rule evaluation across operators (`equals`, `greater_than_or_equal`, `in`, `boolean_true`).
+- **`eligibility.test.ts`**: Deterministic rule evaluation across comparisons, ranges, set membership, nested AND/OR groups, missing values, and unknown operators.
 - **`validation.test.ts`**: Zod validation schemas for chat payloads, guided answers, and user demographics.
-- **`services.test.ts`**: Category filtering, keyword search, and scheme retrieval.
+- **`services.test.ts`**: Category filtering, keyword search, sample-data suppression, and PMEGP source/partial-eligibility behavior.
+- **`gemini.test.ts`**: Structured response parsing, retry, safe fallback, and canonical language context.
+- **`conversation-controller.test.ts`**: Allowlisted information merge, sample-data suppression, no-match behavior, verified-service eligibility, non-disclosure, and service-context follow-ups.
+- **`privacy.test.ts`**: Credential redaction, bounded request validation, and rejection of unsupported profile fields.
 
 ---
 
 ## 🔑 Environment Variables (`.env.local`)
 
 ```env
-# Server-side Gemini API Key (Consumed in Phase 2)
-GEMINI_API_KEY=mock_key_phase1
+# Server-only Google Gemini API key; never expose it with NEXT_PUBLIC_.
+GEMINI_API_KEY=your_google_ai_studio_key
+GEMINI_MODEL=gemini-flash-latest
 
-# Environment settings
+# Client-safe environment settings
 NEXT_PUBLIC_APP_ENV=development
 NEXT_PUBLIC_DEFAULT_LANGUAGE=en
 ```
 
 ---
 
-## 🔮 Phase 2 Gemini Integration Roadmap
+## 🤖 Phase 2 Conversation Architecture
 
-Phase 1 establishes a clean, decoupled architecture. Integrating Gemini in Phase 2 requires **zero changes** to frontend components:
+Text and browser voice input use the same `/api/chat` controller. The server selects Gemini when `GEMINI_API_KEY` is configured, requests schema-constrained JSON through the official `@google/genai` SDK, validates it with Zod, and applies only allowlisted extracted fields. The controller maps intents to the existing service catalog and evaluates verified conditions deterministically, including recursive AND/OR rule groups. It preserves the selected service during follow-up questions. The UI receives one canonical `responseText`; voice playback reads that same text using the selected message locale.
 
-1. **`lib/ai/gemini-ai-service.stub.ts`**: Implement full Gemini 2.0 Flash / Pro API calls using `@google/genai` or standard fetch.
-2. **Structured JSON Output**: Use Gemini's JSON schema mode (`responseSchema`) to enforce returns matching `AIServiceResponse`, `AIIntent`, and `GuidedQuestion`.
-3. **Multilingual System Prompt**: Pass user language (`en`, `ta`, `hi`) to Gemini system prompts to ensure responses match regional dialect standards.
-4. **Gemini Live Audio**: Swap browser `SpeechRecognition` with Gemini real-time audio streams via WebSocket.
+The prompt and schema live under `lib/ai/prompts/` and `lib/ai/schemas/`; orchestration lives under `lib/ai/conversation/`. Gemini is not allowed to supply documents, application steps, official links, or eligibility decisions. Those remain controlled by catalog data and deterministic code.
 
 ---
 
@@ -173,4 +178,15 @@ Phase 1 establishes a clean, decoupled architecture. Integrating Gemini in Phase
 
 - **Zero Sensitive Data Collection**: No passwords, PINs, OTPs, or bank account credentials are requested or stored.
 - **Local Storage / Session Control**: Users can wipe all saved session demographics with a single click in the **My Progress** screen.
-- **Server-Side Key Isolation**: `GEMINI_API_KEY` is strictly confined to server-side route handlers (`/api/chat`) and never leaked to client bundles.
+- **Server-Side Key Isolation**: `GEMINI_API_KEY` is used only by server-side AI modules and is never sent to the browser.
+- **Safe AI Output**: The structured result is validated before use, retry is bounded to one attempt, and raw upstream errors or user content are not logged.
+- **Catalog Safety**: Only HTTPS URLs from verified catalog entries can render as links. Records marked `sample_mock` are clearly labeled; their links, documents, steps, rules, and eligibility outputs are withheld, and they are excluded in production. Empty verified-catalog searches return a localized no-match answer rather than generated scheme claims.
+- **Catalog coverage**: One verified seed record for PMEGP is based on the [JanSamarth scheme page](https://www.jansamarth.in/prime-minister-employment-generation-program-scheme), checked on 2026-10-01. Only the individual age and new-project conditions are modeled; because other criteria (including education/project thresholds and applicant categories) are not fully modeled, passing the known conditions returns `UNKNOWN`, never a positive eligibility result. No document list is claimed. Verify and add the full scheme criteria and more authoritative records before relying on recommendations in production. The four remaining records are demo fixtures marked `sample_mock` and are excluded from production.
+- **Session storage requirement**: The existing `MemoryStorageAdapter` is an in-memory/demo adapter. Replace it with a durable, access-controlled store before relying on conversation memory across production restarts or multiple server instances.
+
+## Phase 2 setup notes
+
+- When Gemini is unconfigured or temporarily unavailable, the server uses a localized deterministic fallback that searches only the verified catalog, asks the service's required missing field, and answers catalog information questions only from sourced facts. It does not replace outages with a generic network message or invent documents, amounts, or benefits.
+- The conversation controller asks only service-required questions; PMEGP can ask whether the project is new or already operating. A request about official documents or application steps can show grounded catalog guidance without collecting unrelated demographics. Unknown eligibility explicitly directs the user to the official source.
+- Browser SpeechRecognition and SpeechSynthesis remain the voice provider. Recognition stays continuous, shows interim text as a preview, and submits the accumulated utterance only when recognition ends or the user taps the microphone to stop. Playback selects a matching browser voice where available and surfaces errors. Gemini Live audio is not required for the shared text/voice conversation path.
+- `GEMINI_MODEL` can override the default `gemini-flash-latest` model when a different compatible Gemini model is selected.

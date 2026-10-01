@@ -21,8 +21,8 @@ import { UserProfileSession } from '@/types/session';
 describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () => {
   beforeEach(async () => {
     // Reset test sessions in database
-    await dbAdapter.deleteSession('reg_session_test');
-    await dbAdapter.deleteSession('reg_session_state');
+    await dbAdapter.deleteSession('session_00000000-0000-4000-8000-000000000001');
+    await dbAdapter.deleteSession('session_00000000-0000-4000-8000-000000000002');
   });
 
   // 1. Interpolation
@@ -149,7 +149,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sessionId: 'reg_session_test',
+          sessionId: 'session_00000000-0000-4000-8000-000000000001',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           language: 'ta',
@@ -162,7 +162,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
       const res = await sessionPost(req);
       expect(res.status).toBe(200);
 
-      const saved = await dbAdapter.getSession('reg_session_test');
+      const saved = await dbAdapter.getSession('session_00000000-0000-4000-8000-000000000001');
       expect(saved).not.toBeNull();
       expect(saved?.language).toBe('ta');
       expect(saved?.locale).toBe('ta-IN');
@@ -171,7 +171,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
     it('updates locale synchronously when session language changes', async () => {
       // First save as Hindi
       await dbAdapter.saveSession({
-        sessionId: 'reg_session_test',
+        sessionId: 'session_00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         language: 'hi',
@@ -186,7 +186,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sessionId: 'reg_session_test',
+          sessionId: 'session_00000000-0000-4000-8000-000000000001',
           language: 'ur',
           demographics: {},
           answers: {},
@@ -196,7 +196,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
       const res = await sessionPost(req);
       expect(res.status).toBe(200);
 
-      const updated = await dbAdapter.getSession('reg_session_test');
+      const updated = await dbAdapter.getSession('session_00000000-0000-4000-8000-000000000001');
       expect(updated?.language).toBe('ur');
       expect(updated?.locale).toBe('ur-IN');
     });
@@ -213,7 +213,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
     it('persists structured answer through Chat API into session.answers without losing prior answers', async () => {
       // Initialize session with existing answers
       await dbAdapter.saveSession({
-        sessionId: 'reg_session_test',
+        sessionId: 'session_00000000-0000-4000-8000-000000000001',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         language: 'en',
@@ -227,7 +227,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sessionId: 'reg_session_test',
+          sessionId: 'session_00000000-0000-4000-8000-000000000001',
           language: 'en',
           answer: { fieldKey: 'state', value: 'Tamil Nadu' },
         }),
@@ -236,7 +236,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
       const res = await chatPost(req);
       expect(res.status).toBe(200);
 
-      const session = await dbAdapter.getSession('reg_session_test');
+      const session = await dbAdapter.getSession('session_00000000-0000-4000-8000-000000000001');
       expect(session?.answers['priorKey']).toBe('existing_val');
       expect(session?.answers['state']).toBe('Tamil Nadu');
     });
@@ -246,7 +246,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
   describe('6. No State Loss on Language Switches', () => {
     it('preserves all answers and demographics when chat endpoint processes request in new language', async () => {
       const initialSession: UserProfileSession = {
-        sessionId: 'reg_session_state',
+        sessionId: 'session_00000000-0000-4000-8000-000000000002',
         createdAt: '2026-01-01T00:00:00.000Z',
         updatedAt: '2026-01-01T00:00:00.000Z',
         language: 'en',
@@ -262,7 +262,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sessionId: 'reg_session_state',
+          sessionId: 'session_00000000-0000-4000-8000-000000000002',
           language: 'ta',
           message: 'வணக்கம்',
         }),
@@ -271,7 +271,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
       const res = await chatPost(req);
       expect(res.status).toBe(200);
 
-      const session = await dbAdapter.getSession('reg_session_state');
+      const session = await dbAdapter.getSession('session_00000000-0000-4000-8000-000000000002');
       expect(session).not.toBeNull();
       // Language and locale updated
       expect(session?.language).toBe('ta');
@@ -296,7 +296,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            sessionId: 'reg_session_test',
+            sessionId: 'session_00000000-0000-4000-8000-000000000001',
             language: badCode,
           }),
         });
@@ -310,7 +310,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
 
     it('rejects unsupported language codes in ChatInputSchema', () => {
       const result = ChatInputSchema.safeParse({
-        sessionId: 'reg_session_test',
+        sessionId: 'session_00000000-0000-4000-8000-000000000001',
         language: 'french',
         message: 'Bonjour',
       });
@@ -323,7 +323,7 @@ describe('Regression Tests: Multilingual Architecture & Phase 1.5 Parity', () =>
       ];
       for (const code of codes) {
         const result = ChatInputSchema.safeParse({
-          sessionId: 'reg_session_test',
+          sessionId: 'session_00000000-0000-4000-8000-000000000001',
           language: code,
           message: 'Hello',
         });

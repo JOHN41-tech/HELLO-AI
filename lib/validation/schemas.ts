@@ -1,9 +1,17 @@
 import { z } from 'zod';
 import { isValidLanguageCode } from '@/lib/i18n/languages';
+import { SAFE_PROFILE_FIELDS } from '@/lib/privacy/profile-fields';
+
+const safeProfileFieldSet = new Set<string>(SAFE_PROFILE_FIELDS);
 
 export const SupportedLanguageSchema = z
   .string()
   .refine((val) => isValidLanguageCode(val), { message: 'Invalid or unsupported language code' });
+
+export const SessionIdSchema = z.string().regex(
+  /^session_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+  { message: 'Invalid session identifier' }
+);
 
 export const ServiceCategorySchema = z.enum([
   'business',
@@ -78,22 +86,72 @@ export const GovernmentServiceSchema = z.object({
 });
 
 export const UserDemographicsSchema = z.object({
-  name: z.string().optional(),
+  name: z.string().max(120).optional(),
   age: z.number().min(0).max(120).optional(),
   gender: z.enum(['female', 'male', 'other']).optional(),
-  state: z.string().optional(),
-  district: z.string().optional(),
-  occupation: z.string().optional(),
-  annualIncome: z.number().min(0).optional(),
+  state: z.string().max(120).optional(),
+  district: z.string().max(120).optional(),
+  occupation: z.string().max(160).optional(),
+  annualIncome: z.number().finite().min(0).max(1_000_000_000_000).optional(),
   category: z.enum(['general', 'obc', 'sc', 'st']).optional(),
   isStudent: z.boolean().optional(),
   isEntrepreneur: z.boolean().optional(),
 });
 
-export const GuidedAnswerSchema = z.object({
-  fieldKey: z.string().min(1),
-  value: z.union([z.string(), z.number(), z.boolean()]),
+const ProfileAnswerValueSchema = z.union([
+  z.string().max(160),
+  z.number().finite().min(0).max(1_000_000_000_000),
+  z.boolean(),
+]);
+const ProfileAnswersSchema = z.record(z.string().max(64), ProfileAnswerValueSchema).superRefine((answers, ctx) => {
+  if (Object.keys(answers).length > SAFE_PROFILE_FIELDS.length) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Too many profile fields' });
+  }
+  for (const field of Object.keys(answers)) {
+    if (!safeProfileFieldSet.has(field)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [field], message: 'Unsupported profile field' });
+    }
+  }
 });
+
+export const GuidedAnswerSchema = z.object({
+  fieldKey: z.string().trim().min(1).max(64).refine(
+    (key) => !/(password|passwd|otp|pin|aadhaar|accountnumber|bankaccount)/i.test(key),
+    { message: 'Sensitive authentication or account fields are not accepted' }
+  ),
+  value: z.union([
+    z.string().max(160),
+    z.number().finite().min(0).max(1_000_000_000_000),
+    z.boolean(),
+  ]),
+});
+const ProfileContextSchema = z.object({
+  demographics: UserDemographicsSchema.omit({ name: true }).partial().optional(),
+  answers: ProfileAnswersSchema.optional(),
+});
+
+export const SessionPersistInputSchema = z.object({
+  sessionId: SessionIdSchema,
+  createdAt: z.string().datetime().optional(),
+  updatedAt: z.string().datetime().optional(),
+  language: SupportedLanguageSchema,
+  locale: z.string().max(16).optional(),
+  demographics: UserDemographicsSchema.omit({ name: true }).partial().optional(),
+  answers: ProfileAnswersSchema.optional(),
+  currentStepIndex: z.number().int().min(0).max(1000).optional(),
+}).strict();
+
+export const EligibilityCheckInputSchema = z.object({
+  serviceId: z.string().trim().min(1).max(128),
+  session: z.object({
+    sessionId: SessionIdSchema,
+    language: SupportedLanguageSchema,
+    locale: z.string().max(16).optional(),
+    demographics: UserDemographicsSchema.omit({ name: true }).partial().optional(),
+    answers: ProfileAnswersSchema.optional(),
+    currentStepIndex: z.number().int().min(0).max(1000).optional(),
+  }),
+}).strict();
 
 /**
  * A turn is either free text or a structured answer to a guided question. Guided answers
@@ -102,10 +160,13 @@ export const GuidedAnswerSchema = z.object({
  */
 export const ChatInputSchema = z
   .object({
-    message: z.string().min(1, 'Message cannot be empty').optional(),
+    message: z.string().trim().min(1, 'Message cannot be empty').max(4000).optional(),
     answer: GuidedAnswerSchema.optional(),
-    sessionId: z.string(),
+    sessionId: SessionIdSchema,
     language: SupportedLanguageSchema,
+    locale: z.string().max(16).optional(),
+    direction: z.enum(['ltr', 'rtl']).optional(),
+    profileContext: ProfileContextSchema.optional(),
   })
   .refine((data) => Boolean(data.message) || Boolean(data.answer), {
     message: 'A message or a guided answer is required',

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { Mic2 } from 'lucide-react';
 import { LanguageSelector } from '@/components/language/LanguageSelector';
 import { AccessibilityToolbar } from '@/components/accessibility/AccessibilityToolbar';
 import { LanguageCode } from '@/types/language';
@@ -17,31 +17,43 @@ export function Header({ currentLanguage, onLanguageChange }: HeaderProps) {
   const { t } = useLanguage();
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 px-4 py-3">
-      <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
-        <Link href="/" className="flex items-center gap-2.5 group focus-visible:outline-none">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-400 to-emerald-300 text-slate-950 flex items-center justify-center font-black text-xl shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-            <Sparkles className="w-6 h-6" />
-          </div>
-          <div>
-            <span className="font-extrabold text-xl tracking-tight text-slate-100 group-hover:text-emerald-400 transition-colors">
-              {t('appName')}
+    <>
+      <a
+        href="#main-content"
+        className="sr-only z-[100] rounded-lg bg-white px-4 py-3 text-sm font-semibold text-slate-950 focus:not-sr-only focus:fixed focus:start-3 focus:top-3"
+      >
+        {t('actions.skipToContent')}
+      </a>
+      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95">
+        <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-3 px-4 py-2 sm:px-6">
+          <Link
+            href="/"
+            className="group flex min-w-0 items-center gap-2.5 rounded-xl"
+            aria-label={t('appName')}
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-950 text-emerald-400">
+              <Mic2 className="h-5 w-5" aria-hidden="true" />
             </span>
-            <span className="block text-[10px] font-medium text-emerald-400/80 tracking-wide uppercase">
-              {t('app.navigatorLabel')}
+            <span className="min-w-0">
+              <span className="block truncate text-base font-extrabold tracking-tight text-slate-100 sm:text-lg">
+                {t('appName')}
+              </span>
+              <span className="hidden text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500 sm:block">
+                {t('app.navigatorLabel')}
+              </span>
             </span>
-          </div>
-        </Link>
+          </Link>
 
-        <div className="flex items-center gap-3">
-          <AccessibilityToolbar />
-          <LanguageSelector
-            currentLanguage={currentLanguage}
-            onLanguageChange={onLanguageChange}
-            variant="dropdown"
-          />
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <AccessibilityToolbar />
+            <LanguageSelector
+              currentLanguage={currentLanguage}
+              onLanguageChange={onLanguageChange}
+              variant="dropdown"
+            />
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }

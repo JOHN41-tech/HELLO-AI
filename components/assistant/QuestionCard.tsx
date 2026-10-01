@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { GuidedQuestion } from '@/types/conversation';
+import React, { useId, useState } from 'react';
+import { GuidedQuestion, QuestionOption } from '@/types/conversation';
 import { LanguageCode } from '@/types/language';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -17,82 +17,99 @@ export interface QuestionCardProps {
 
 export function QuestionCard({ question, language, onAnswer }: QuestionCardProps) {
   const { t } = useLanguage();
-  const [inputValue, setInputValue] = useState<string>('');
+  const questionId = useId();
+  const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState<string | number | boolean | null>(null);
-
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const promptText = translateLocalizedText(language, question.prompt);
   const helpText = question.helpText ? translateLocalizedText(language, question.helpText) : '';
+  const choiceOptions: QuestionOption[] = question.options?.length
+    ? question.options
+    : question.inputType === 'yes_no'
+      ? [
+          { label: { [language]: t('common.yes') }, value: true },
+          { label: { [language]: t('common.no') }, value: false },
+        ]
+      : [];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (hasSubmitted) return;
     if (selectedOption !== null) {
+      setHasSubmitted(true);
       onAnswer(question.fieldKey, selectedOption);
     } else if (inputValue.trim()) {
-      const val = question.inputType === 'number' ? Number(inputValue) : inputValue;
-      onAnswer(question.fieldKey, val);
+      setHasSubmitted(true);
+      const value = question.inputType === 'number' ? Number(inputValue) : inputValue;
+      onAnswer(question.fieldKey, value);
     }
   };
 
   return (
-    <Card className="border-emerald-500/40 bg-slate-900/95 my-3 shadow-xl ring-1 ring-emerald-500/20">
+    <Card className="my-2 border-emerald-500/30 bg-slate-900" role="group" aria-labelledby={`${questionId}-title`}>
       <div className="flex items-start gap-3">
-        <div className="p-2 rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 shrink-0">
-          <HelpCircle className="w-5 h-5" />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-950 text-emerald-400">
+          <HelpCircle className="h-5 w-5" aria-hidden="true" />
         </div>
-        <div className="flex-1">
-          <h3 className="text-base sm:text-lg font-bold text-emerald-300 leading-snug">{promptText}</h3>
-          {helpText && <p className="text-xs text-slate-400 mt-1">{helpText}</p>}
+        <div className="min-w-0 flex-1">
+          <h3 id={`${questionId}-title`} className="text-base font-bold leading-snug text-slate-100 sm:text-lg">
+            {promptText}
+          </h3>
+          {helpText && <p className="mt-1 text-sm leading-relaxed text-slate-500">{helpText}</p>}
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="mt-4 space-y-3">
-        {question.options && question.options.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {question.options.map((opt, idx) => {
-              const label = translateLocalizedText(language, opt.label);
-              const isSelected = selectedOption === opt.value;
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    setSelectedOption(opt.value);
-                    onAnswer(question.fieldKey, opt.value);
-                  }}
-                  className={`flex items-center justify-between p-3.5 rounded-xl border text-start text-sm font-semibold transition-all min-h-[48px] cursor-pointer ${
-                    isSelected
-                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-md'
-                      : 'bg-slate-800/80 text-slate-200 border-slate-700 hover:border-emerald-500/50 hover:bg-slate-800'
-                  }`}
-                >
-                  <span>{label}</span>
-                  {isSelected && <CheckCircle2 className="w-4 h-4 text-white shrink-0" />}
-                </button>
-              );
-            })}
-          </div>
+        {choiceOptions.length > 0 ? (
+          <fieldset disabled={hasSubmitted}>
+            <legend className="sr-only">{promptText}</legend>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {choiceOptions.map((option, index) => {
+                const label = translateLocalizedText(language, option.label);
+                const isSelected = selectedOption === option.value;
+                return (
+                  <button
+                    key={`${String(option.value)}-${index}`}
+                    type="button"
+                    onClick={() => {
+                      if (hasSubmitted) return;
+                      setSelectedOption(option.value);
+                      setHasSubmitted(true);
+                      onAnswer(question.fieldKey, option.value);
+                    }}
+                    className={`flex min-h-12 items-center justify-between gap-3 rounded-xl border px-4 py-3 text-start text-sm font-semibold transition-colors disabled:cursor-default disabled:opacity-75 ${
+                      isSelected
+                        ? 'border-emerald-500 bg-emerald-950 text-emerald-400'
+                        : 'border-slate-800 bg-slate-950 text-slate-300 hover:border-emerald-500/50 hover:bg-emerald-950'
+                    }`}
+                    aria-pressed={isSelected}
+                  >
+                    <span className="leading-snug">{label}</span>
+                    {isSelected && <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
         ) : (
-          <div className="flex flex-col sm:flex-row gap-2">
-            <label htmlFor={`guided-input-${question.id}`} className="sr-only">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <label htmlFor={`${questionId}-input`} className="sr-only">
               {promptText || t('assistant.typeAnswer')}
             </label>
             <input
-              id={`guided-input-${question.id}`}
-              type={question.inputType === 'number' ? 'number' : 'text'}
+              id={`${questionId}-input`}
+              type={question.inputType === 'number' ? 'number' : question.inputType === 'date' ? 'date' : 'text'}
+              inputMode={question.inputType === 'number' ? 'numeric' : undefined}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder={t('assistant.typeAnswer')}
+              onChange={(event) => setInputValue(event.target.value)}
+              placeholder={question.inputType === 'date' ? undefined : t('assistant.typeAnswer')}
               aria-label={promptText || t('assistant.typeAnswer')}
-              className="flex-1 bg-slate-950 border border-slate-700 focus:border-emerald-400 text-slate-100 rounded-xl px-4 py-3 text-base outline-none min-h-[48px]"
-              autoFocus
+              className="min-h-12 min-w-0 flex-1 rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-base text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none"
+              maxLength={1000}
+              disabled={hasSubmitted}
             />
-            <Button
-              type="submit"
-              variant="primary"
-              size="md"
-              aria-label={t('actions.submit')}
-            >
-              {t('actions.submit')}
+            <Button type="submit" variant="primary" size="md" disabled={!inputValue.trim() || hasSubmitted}>
+              {t('actions.continue')}
             </Button>
           </div>
         )}

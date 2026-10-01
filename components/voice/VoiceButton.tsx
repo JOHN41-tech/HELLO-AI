@@ -10,6 +10,8 @@ export interface VoiceButtonProps {
   onStartListening: () => void;
   onStopListening: () => void;
   size?: 'md' | 'lg' | 'hero';
+  disabled?: boolean;
+  busyLabel?: string;
 }
 
 export function VoiceButton({
@@ -17,76 +19,87 @@ export function VoiceButton({
   onStartListening,
   onStopListening,
   size = 'hero',
+  disabled = false,
+  busyLabel,
 }: VoiceButtonProps) {
   const { t } = useLanguage();
-
   const isListening = voiceState === 'listening';
   const isProcessing = voiceState === 'processing';
-  const isSpeaking = voiceState === 'speaking';
+  const isSpeaking = voiceState === 'speaking' || voiceState === 'paused';
   const isUnsupported = voiceState === 'unsupported';
+  const isPaused = voiceState === 'paused';
+  const isBusy = isProcessing || isSpeaking;
 
   const handleClick = () => {
-    if (isListening) {
-      onStopListening();
-    } else {
-      onStartListening();
-    }
+    if (isListening) onStopListening();
+    else if (!isBusy && !disabled && !isUnsupported) onStartListening();
   };
 
   const getLabel = () => {
     if (isListening) return t('conversation.listening');
     if (isProcessing) return t('conversation.processing');
-    if (isSpeaking) return t('assistant.speak');
+    if (voiceState === 'speaking') return t('assistant.speak');
+    if (isPaused) return t('assistant.resumeAudio');
     if (isUnsupported) return t('errors.voiceUnavailable');
+    if (voiceState === 'error') return t('errors.generic');
+    if (disabled) return busyLabel || t('conversation.thinking');
     return t('assistant.listen');
   };
 
   const sizeClasses = {
-    md: 'w-14 h-14 text-xl',
-    lg: 'w-20 h-20 text-3xl',
-    hero: 'w-28 h-28 text-4xl sm:w-32 sm:h-32 sm:text-5xl',
+    md: 'h-14 w-14 text-xl',
+    lg: 'h-20 w-20 text-3xl',
+    hero: 'h-28 w-28 text-4xl sm:h-32 sm:w-32 sm:text-5xl',
   };
+  const isDisabled = disabled || isBusy || isUnsupported;
 
   return (
-    <div className="flex flex-col items-center gap-3 my-2">
+    <div className="flex flex-col items-center gap-2" role="group" aria-label={t('assistant.listen')}>
       <button
+        type="button"
         onClick={handleClick}
-        disabled={isUnsupported}
-        className={`relative flex items-center justify-center rounded-full transition-all duration-300 cursor-pointer shadow-2xl focus-visible:ring-4 focus-visible:ring-emerald-400 focus-visible:outline-none ${
-          sizeClasses[size]
-        } ${
-          isListening
-            ? 'bg-red-500 text-white animate-mic-pulse scale-105 shadow-red-500/50'
-            : isSpeaking
-            ? 'bg-amber-500 text-slate-950 scale-105 shadow-amber-500/50'
-            : isProcessing
-            ? 'bg-teal-500 text-slate-950 scale-100 shadow-teal-500/50'
-            : 'bg-gradient-to-tr from-emerald-500 via-teal-400 to-emerald-300 text-slate-950 hover:scale-105 active:scale-95 shadow-emerald-500/30'
-        }`}
+        disabled={isDisabled}
+        aria-pressed={isListening}
+        aria-describedby="voice-status-label"
         aria-label={getLabel()}
         title={getLabel()}
+        className={`relative flex items-center justify-center rounded-full border-4 border-white shadow-md transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-400 disabled:cursor-not-allowed disabled:opacity-70 ${sizeClasses[size]} ${
+          isListening
+            ? 'animate-mic-pulse border-red-100 bg-red-500 text-white'
+            : voiceState === 'error'
+              ? 'border-red-100 bg-red-950/40 text-red-400'
+              : voiceState === 'speaking' || isPaused
+                ? 'border-amber-100 bg-amber-400 text-slate-950'
+                : isProcessing
+                  ? 'border-teal-100 bg-teal-500 text-white'
+                  : 'bg-emerald-600 text-white hover:bg-emerald-500'
+        }`}
       >
         {isListening ? (
-          <Mic className="w-1/2 h-1/2 animate-bounce" />
+          <Mic className="h-1/2 w-1/2" aria-hidden="true" />
         ) : isProcessing ? (
-          <Loader2 className="w-1/2 h-1/2 animate-spin" />
+          <Loader2 className="h-1/2 w-1/2 animate-spin" aria-hidden="true" />
         ) : isSpeaking ? (
-          <Volume2 className="w-1/2 h-1/2 animate-pulse" />
+          <Volume2 className="h-1/2 w-1/2" aria-hidden="true" />
         ) : isUnsupported ? (
-          <MicOff className="w-1/2 h-1/2 text-slate-400" />
+          <MicOff className="h-1/2 w-1/2" aria-hidden="true" />
         ) : (
-          <Mic className="w-1/2 h-1/2" />
+          <Mic className="h-1/2 w-1/2" aria-hidden="true" />
         )}
       </button>
-
       <span
-        className={`text-sm sm:text-base font-bold tracking-wide px-4 py-1.5 rounded-full backdrop-blur ${
+        id="voice-status-label"
+        className={`rounded-full px-3 py-1 text-xs font-semibold ${
           isListening
-            ? 'text-red-400 bg-red-950/60 border border-red-500/30 animate-pulse'
-            : isSpeaking
-            ? 'text-amber-300 bg-amber-950/60 border border-amber-500/30'
-            : 'text-emerald-300 bg-slate-900/80 border border-slate-800'
+            ? 'bg-red-950/40 text-red-400'
+            : voiceState === 'speaking' || isPaused
+              ? 'bg-amber-950/60 text-amber-300'
+              : voiceState === 'error' || isUnsupported
+                ? 'bg-red-950/40 text-red-400'
+                : 'bg-slate-900 text-slate-500'
         }`}
+        role="status"
+        aria-live="polite"
       >
         {getLabel()}
       </span>

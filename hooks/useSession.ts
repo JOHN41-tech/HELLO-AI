@@ -5,14 +5,13 @@ import { UserProfileSession, UserDemographics } from '@/types/session';
 import { LanguageCode } from '@/types/language';
 import { getLanguageConfig } from '@/lib/i18n/languages';
 import { dbAdapter } from '@/lib/database/memory-storage-adapter';
-
-const DEFAULT_SESSION_ID = 'session_default_user';
+import { getOrCreateBrowserSessionId } from '@/lib/session/session-id';
 
 export function useSession(currentLanguage: LanguageCode) {
   const langConfig = getLanguageConfig(currentLanguage);
 
   const [session, setSession] = useState<UserProfileSession>({
-    sessionId: DEFAULT_SESSION_ID,
+    sessionId: '',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     language: currentLanguage,
@@ -25,20 +24,25 @@ export function useSession(currentLanguage: LanguageCode) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    let cancelled = false;
     async function loadSession() {
       setIsLoading(true);
-      const existing = await dbAdapter.getSession(DEFAULT_SESSION_ID);
+      const sessionId = getOrCreateBrowserSessionId();
+      const existing = await dbAdapter.getSession(sessionId);
+      if (cancelled) return;
+
       if (existing) {
-        // Language update without resetting conversation/demographics
+        // Language updates only presentation; history, collected facts, and progress remain.
         setSession({
           ...existing,
+          sessionId,
           language: currentLanguage,
           locale: langConfig.locale,
           updatedAt: new Date().toISOString(),
         });
       } else {
         const newSession: UserProfileSession = {
-          sessionId: DEFAULT_SESSION_ID,
+          sessionId,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           language: currentLanguage,
@@ -48,13 +52,14 @@ export function useSession(currentLanguage: LanguageCode) {
           currentStepIndex: 0,
         };
         await dbAdapter.saveSession(newSession);
+        if (cancelled) return;
         setSession(newSession);
       }
       setIsLoading(false);
     }
-    loadSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLanguage]);
+    void loadSession();
+    return () => { cancelled = true; };
+  }, [currentLanguage, langConfig.locale]);
 
   const updateDemographics = useCallback(
     async (demographics: Partial<UserDemographics>) => {
@@ -64,7 +69,7 @@ export function useSession(currentLanguage: LanguageCode) {
           demographics: { ...prev.demographics, ...demographics },
           updatedAt: new Date().toISOString(),
         };
-        dbAdapter.saveSession(updated);
+        void dbAdapter.saveSession(updated);
         return updated;
       });
     },
@@ -89,7 +94,7 @@ export function useSession(currentLanguage: LanguageCode) {
           answers: updatedAnswers,
           updatedAt: new Date().toISOString(),
         };
-        dbAdapter.saveSession(updated);
+        void dbAdapter.saveSession(updated);
         return updated;
       });
     },
@@ -97,9 +102,16 @@ export function useSession(currentLanguage: LanguageCode) {
   );
 
   const clearSession = useCallback(async () => {
-    await dbAdapter.deleteSession(DEFAULT_SESSION_ID);
+    const sessionId = session.sessionId;
+    if (!sessionId) return;
+    await dbAdapter.deleteSession(sessionId);
+    try {
+      await fetch(`/api/session?sessionId=${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
+    } catch {
+      // Local deletion remains available when offline; server-side deletion is best effort.
+    }
     const fresh: UserProfileSession = {
-      sessionId: DEFAULT_SESSION_ID,
+      sessionId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       language: currentLanguage,
@@ -110,7 +122,7 @@ export function useSession(currentLanguage: LanguageCode) {
     };
     await dbAdapter.saveSession(fresh);
     setSession(fresh);
-  }, [currentLanguage, langConfig.locale]);
+  }, [session.sessionId, currentLanguage, langConfig.locale]);
 
   return { session, isLoading, updateDemographics, updateAnswer, clearSession };
 }

@@ -60,6 +60,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = readStoredLanguage();
+    // This effect intentionally hydrates browser-only persisted state after matching server/client markup.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLanguageState(stored);
     applyDocumentLanguage(stored);
   }, []);

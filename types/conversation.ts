@@ -4,6 +4,13 @@ import { EligibilityResult } from './session';
 
 export type MessageRole = 'user' | 'assistant' | 'system';
 
+export interface ConversationHistoryEntry {
+  role: 'user' | 'assistant';
+  content: string;
+  language: LanguageCode;
+  timestamp: string;
+}
+
 export type MessageType =
   | 'text'
   | 'voice'
@@ -44,6 +51,8 @@ export interface ChatMessageMetadata {
   eligibilityResult?: EligibilityResult;
   stepIndex?: number;
   isAudioPlaying?: boolean;
+  shouldSpeak?: boolean;
+  provider?: 'gemini' | 'mock' | 'fallback';
 }
 
 export interface ChatMessage {

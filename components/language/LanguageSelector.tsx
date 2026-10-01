@@ -20,24 +20,28 @@ export function LanguageSelector({
 
   if (variant === 'dropdown') {
     return (
-      <select
-        value={currentLanguage}
-        onChange={(e) => onLanguageChange(e.target.value as LanguageCode)}
-        className="bg-slate-900 border border-slate-700 text-slate-100 rounded-xl px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer min-h-[44px]"
-        aria-label={t('welcome.chooseLanguage')}
-      >
-        {SUPPORTED_LANGUAGES.map((lang) => (
-          <option key={lang.code} value={lang.code}>
-            {lang.flag} {lang.nativeName} ({lang.name})
-          </option>
-        ))}
-      </select>
+      <label className="sr-only" htmlFor="language-selector">
+        {t('welcome.chooseLanguage')}
+        <select
+          id="language-selector"
+          value={currentLanguage}
+          onChange={(event) => onLanguageChange(event.target.value as LanguageCode)}
+          className="not-sr-only min-h-11 max-w-[8.5rem] cursor-pointer rounded-xl border border-slate-800 bg-slate-900 px-2.5 text-sm font-semibold text-slate-100 sm:max-w-48 sm:px-3"
+          aria-label={t('welcome.chooseLanguage')}
+        >
+          {SUPPORTED_LANGUAGES.map((lang) => (
+            <option key={lang.code} value={lang.code} lang={lang.code} dir={lang.direction}>
+              {lang.nativeName}
+            </option>
+          ))}
+        </select>
+      </label>
     );
   }
 
   return (
     <div
-      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 w-full"
+      className="grid w-full grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4"
       role="group"
       aria-label={t('welcome.chooseLanguage')}
     >
@@ -46,17 +50,20 @@ export function LanguageSelector({
         return (
           <button
             key={lang.code}
+            type="button"
+            lang={lang.code}
+            dir={lang.direction}
             onClick={() => onLanguageChange(lang.code)}
-            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-bold transition-all min-h-[48px] cursor-pointer border ${
+            className={`flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors ${
               isSelected
-                ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-lg shadow-emerald-500/20 scale-102 font-black'
-                : 'bg-slate-900/90 text-slate-200 border-slate-800 hover:border-slate-700 hover:bg-slate-800'
+                ? 'border-emerald-500 bg-emerald-600 text-white'
+                : 'border-slate-800 bg-slate-900 text-slate-200 hover:border-emerald-500/50 hover:bg-slate-800'
             }`}
             aria-pressed={isSelected}
-            title={`${lang.name} - ${lang.nativeName}`}
+            title={lang.nativeName}
           >
-            <span className="text-base">{lang.flag}</span>
             <span className="truncate">{lang.nativeName}</span>
+            {isSelected && <span className="sr-only">{t('common.selected')}</span>}
           </button>
         );
       })}

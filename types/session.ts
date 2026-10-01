@@ -1,4 +1,5 @@
 import { LanguageCode } from './language';
+import { ConversationHistoryEntry } from './conversation';
 
 export interface UserDemographics {
   name?: string;
@@ -17,14 +18,15 @@ export interface RuleEvaluationDetail {
   ruleId: string;
   field: string;
   passed: boolean;
-  userValue?: string | number | boolean | string[];
-  expectedValue?: string | number | boolean | string[];
+  userValue?: string | number | boolean | string[] | number[];
+  expectedValue?: string | number | boolean | string[] | number[];
   explanation: string;
 }
 
 export interface EligibilityResult {
   serviceId: string;
   isEligible: boolean;
+  status?: 'POTENTIALLY_ELIGIBLE' | 'NOT_ELIGIBLE' | 'MORE_INFORMATION_REQUIRED' | 'UNKNOWN';
   score: number; // 0 to 100 percentage match
   matchedRules: RuleEvaluationDetail[];
   failedRules: RuleEvaluationDetail[];
@@ -40,6 +42,10 @@ export interface UserProfileSession {
   demographics: UserDemographics;
   answers: Record<string, string | number | boolean>;
   primaryIntent?: string;
+  userGoal?: string;
+  missingInformation?: string[];
+  currentStage?: string;
+  conversationHistory?: ConversationHistoryEntry[];
   selectedServiceId?: string;
   eligibilityResults?: Record<string, EligibilityResult>;
   currentStepIndex: number;

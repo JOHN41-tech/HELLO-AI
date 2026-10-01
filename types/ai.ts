@@ -1,5 +1,5 @@
 import { LanguageCode } from './language';
-import { GuidedQuestion, ChatMessage } from './conversation';
+import { GuidedQuestion, ConversationHistoryEntry } from './conversation';
 import { GovernmentService } from './service';
 import { UserProfileSession, EligibilityResult } from './session';
 
@@ -12,21 +12,40 @@ export interface AIIntent {
 
 export interface AIServiceResponse {
   message: string;
+  /** One canonical response string shared by the chat UI and text-to-speech. */
+  responseText?: string;
+  shouldSpeak?: boolean;
+  provider?: 'gemini' | 'mock' | 'fallback';
+  serviceId?: string;
   question?: GuidedQuestion;
   suggestedService?: GovernmentService;
   eligibilityResult?: EligibilityResult;
   intent?: AIIntent;
-  nextAction?: 'ask_question' | 'show_service' | 'explain_eligibility' | 'guide_step';
+  nextAction?:
+    | 'ask_question'
+    | 'ask_clarification'
+    | 'show_service'
+    | 'explain_eligibility'
+    | 'guide_step'
+    | 'general_response'
+    | 'ASK_CLARIFICATION'
+    | 'ASK_REQUIRED_INFORMATION'
+    | 'SEARCH_SERVICES'
+    | 'CHECK_ELIGIBILITY'
+    | 'SHOW_SERVICE'
+    | 'PROVIDE_GUIDANCE'
+    | 'GENERAL_RESPONSE'
+    | 'END_CONVERSATION';
 }
 
 export interface AIService {
   understandIntent(userQuery: string, language: LanguageCode): Promise<AIIntent>;
-  generateQuestion(session: UserProfileSession, language: LanguageCode): Promise<GuidedQuestion | null>;
+  generateQuestion(session: UserProfileSession, language: LanguageCode, requiredFields?: string[]): Promise<GuidedQuestion | null>;
   generateResponse(
     userQuery: string,
     session: UserProfileSession,
     language: LanguageCode,
-    history: ChatMessage[]
+    history: ConversationHistoryEntry[]
   ): Promise<AIServiceResponse>;
   summarizeUserNeed(session: UserProfileSession, language: LanguageCode): Promise<string>;
   explainEligibility(service: GovernmentService, result: EligibilityResult, language: LanguageCode): Promise<string>;

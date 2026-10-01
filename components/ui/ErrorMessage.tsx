@@ -13,17 +13,15 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   const { t } = useLanguage();
 
   return (
-    <div
-      aria-live="assertive"
-      className="p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 text-amber-200 flex items-start gap-3 my-2 shadow-md"
-    >
-      <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-      <div className="flex-1 text-sm leading-relaxed">
-        <p className="font-medium">{message}</p>
+    <div role="alert" aria-live="assertive" className="my-3 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-950 px-4 py-3 text-slate-300">
+      <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" aria-hidden="true" />
+      <div className="min-w-0 flex-1 text-sm leading-relaxed">
+        <p>{message}</p>
         {onRetry && (
           <button
+            type="button"
             onClick={onRetry}
-            className="mt-2 text-xs font-semibold underline text-amber-300 hover:text-amber-100 focus-visible:outline-none"
+            className="mt-2 inline-flex min-h-11 items-center rounded-lg px-2 font-semibold text-amber-300 underline underline-offset-2 hover:text-slate-100"
           >
             {t('actions.tryAgain')}
           </button>

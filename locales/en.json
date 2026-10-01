@@ -3,23 +3,23 @@
   "tagline": "Your Voice. Your Rights. Your AI Guide.",
   "app": {
     "navigatorLabel": "AI Navigator",
-    "phaseBadge": "Phase 1.5"
+    "phaseBadge": "Phase 2"
   },
   "welcome": {
-    "title": "Tell me what you need.",
+    "title": "How can I help you?",
     "subtitle": "Simply speak or type in your language. I will help you find official government support, check eligibility, and guide you step-by-step.",
     "start": "Start with HELLO AI",
     "chooseLanguage": "Choose your language",
     "languageBadge": "12 Indian Languages",
     "chooseNeed": "Or tap what you need:",
-    "privacyNote": "12 Indian Languages • Privacy Protected • Voice-First Accessibility"
+    "privacyNote": "I only ask for information needed to help find relevant services."
   },
   "assistant": {
-    "placeholder": "e.g., I want help starting a small business...",
+    "placeholder": "Type your question...",
     "send": "Send",
     "listen": "Tap to speak",
     "stop": "Stop",
-    "speak": "Speaking...",
+    "speak": "HELLO AI is speaking...",
     "replay": "Listen to message",
     "stopAudio": "Stop audio",
     "voiceQuery": "Voice query",
@@ -27,11 +27,25 @@
     "runDemo": "Run Demo",
     "reset": "Reset",
     "schemeSuggestion": "Here is the recommended scheme, eligibility status, required documents, and step-by-step guide:",
-    "schemeMatched": "Thank you! Your information has been verified and here is your matched scheme:"
+    "schemeMatched": "Thank you! Your information has been verified and here is your matched scheme:",
+    "pauseAudio": "Pause audio",
+    "resumeAudio": "Resume audio",
+    "askGender": "If you are comfortable sharing, what gender do you identify as?",
+    "genderFemale": "Female",
+    "genderMale": "Male",
+    "genderOther": "Another identity",
+    "preferNotToSay": "Prefer not to say",
+    "askBusinessStatus": "Is this a new project, or is the business already operating?",
+    "projectNew": "New project",
+    "projectExisting": "Already operating",
+    "offlineHelp": "I can help you find verified government services. Tell me what kind of support you need or name a scheme; I will only use information in the available official catalog.",
+    "offlineQuestion": "I found a verified listing that may relate to your request. To check its available conditions, please answer this one question:",
+    "noVerifiedDocuments": "The verified catalog does not include a confirmed document list for this service. Please use the official link on the service card to check current requirements.",
+    "noVerifiedDetails": "I don't have a verified answer for that detail in the catalog. Please use the official link on the service card; I won't guess."
   },
   "conversation": {
     "thinking": "Understanding your request...",
-    "listening": "Listening...",
+    "listening": "Listening — tap the microphone when you're finished",
     "processing": "Processing your voice..."
   },
   "service": {
@@ -48,30 +62,37 @@
     "action": "Action:",
     "loading": "Loading government services...",
     "empty": "No services found matching your search. Try changing your search term.",
-    "discover": "Discover Official Schemes & Assistance"
+    "discover": "Browse Government Services & Assistance",
+    "sampleNotice": "Sample data only — not verified. Do not rely on it for an application.",
+    "noMatch": "I couldn't find a verified government service matching your request in the available catalog. You can share more details or try another category."
   },
   "eligibility": {
     "title": "Your Eligibility Breakdown",
-    "potentiallyEligible": "You appear eligible for this scheme",
+    "potentiallyEligible": "You may meet the basic criteria (not an official decision).",
     "notEligible": "Some criteria are not met",
     "moreInformationRequired": "Additional information required",
     "missingInfoTitle": "Still need details",
     "matchedTitle": "Criteria you meet",
-    "failedTitle": "Criteria not met"
+    "failedTitle": "Criteria not met",
+    "disclaimer": "This is only a basic estimate from the available criteria. The relevant authority makes the final decision.",
+    "unknown": "HELLO AI cannot fully assess this scheme because some official criteria are not modeled here. Review the official scheme page; the government makes the final decision."
   },
   "documents": {
-    "title": "Required Documents",
+    "title": "Documents you may need",
     "required": "Required",
     "optional": "Optional",
-    "needToConfirm": "Need to confirm your {field}"
+    "needToConfirm": "Need to confirm your {field}",
+    "notVerified": "The verified catalog does not yet include a confirmed document list for this service. Check the official website for current requirements."
   },
   "guidance": {
     "title": "Step-by-Step Guide",
-    "nextStep": "Next Step"
+    "nextStep": "Next Step",
+    "guideMe": "Guide me",
+    "stepOf": "Step {current} of {total}"
   },
   "progress": {
     "sessionId": "Session ID",
-    "profileTitle": "Active Profile Details",
+    "profileTitle": "Information you have shared",
     "phaseBadge": "Phase 1 Session"
   },
   "profile": {
@@ -79,24 +100,33 @@
     "age": "Age",
     "state": "State",
     "occupation": "Occupation / Enterprise",
-    "userResponses": "User Responses:"
+    "userResponses": "User Responses:",
+    "annualIncome": "Annual income",
+    "gender": "Gender",
+    "projectStatus": "Project status",
+    "additionalDetails": "Additional details"
   },
   "privacy": {
-    "title": "Privacy & Security Guarantee",
+    "title": "Your privacy",
     "intro": "HELLO AI operates on strict data minimization principles. We do NOT collect or store:",
     "passwords": "Passwords or PINs",
     "bankPasswords": "Bank passwords or OTPs",
     "aadhaar": "Full Aadhaar numbers or financial credentials"
   },
   "common": {
-    "notProvided": "Not provided yet"
+    "notProvided": "Not provided yet",
+    "selected": "Selected",
+    "you": "You",
+    "yes": "Yes",
+    "no": "No"
   },
   "nav": {
     "label": "Bottom Navigation",
     "home": "Home",
     "assistant": "Talk to AI",
     "services": "Government Services",
-    "progress": "My Progress"
+    "progress": "My Progress",
+    "servicesShort": "Services"
   },
   "accessibility": {
     "highContrast": "High Contrast Mode",
@@ -116,13 +146,16 @@
     "categoryBusiness": "Women Enterprise & Business",
     "categoryEducation": "Education & Scholarships",
     "categoryAssistance": "Government Assistance",
-    "categorySkill": "Skills & Self-Employment"
+    "categorySkill": "Skills & Self-Employment",
+    "skipToContent": "Skip to main content",
+    "continue": "Continue"
   },
   "errors": {
     "network": "Unable to connect right now. Please check your internet connection.",
     "voiceUnavailable": "Voice input is not available on this browser. You can type below.",
     "languageUnsupported": "Selected language is currently not supported.",
     "translationUnavailable": "This translation is not available yet, so it is shown in English.",
-    "generic": "Something went wrong. Please try again or type your request."
+    "generic": "Something went wrong. Please try again or type your request.",
+    "speechUnavailable": "No speech voice is available in this browser. You can read the message above or try another device."
   }
 }
