@@ -315,6 +315,27 @@ describe('conversation controller', () => {
     expect(response.responseText).toContain('does not include a confirmed document list');
   });
 
+  it('keeps a grounded catalog answer when Gemini labels a direct question as general response', async () => {
+    const response = await processConversationTurn({
+      message: 'What is PMEGP?',
+      session: session(),
+      language: 'en',
+      history: [],
+      aiService: provider({
+        message: 'PMEGP supports new non-farm micro-enterprises through bank finance.',
+        responseText: 'PMEGP supports new non-farm micro-enterprises through bank finance.',
+        provider: 'gemini',
+        intent: { category: 'BUSINESS_SUPPORT', userNeedSummary: 'PMEGP overview', confidence: 0.98, extractedFields: {} },
+        serviceId: 'pmegp-new-enterprise',
+        nextAction: 'GENERAL_RESPONSE',
+      }),
+    });
+    expect(response.responseText).toContain('PMEGP supports new non-farm micro-enterprises');
+    expect(response.question).toBeUndefined();
+    expect(response.eligibilityResult).toBeUndefined();
+    expect(response.suggestedService?.id).toBe('pmegp-new-enterprise');
+  });
+
   it('does not attach a question that is not among deterministic missing fields', async () => {
     useVerifiedBusinessRecord();
     const profile = session({ demographics: { age: 28, state: 'Tamil Nadu' } });

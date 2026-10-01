@@ -60,6 +60,11 @@ describe('ServiceRepository', () => {
     expect(results[0].id).toBe('tn-free-sewing-machine-scheme');
   });
 
+  it('should match meaningful catalog terms inside natural-language questions', async () => {
+    const results = await serviceRepository.searchServices('What is PMEGP?');
+    expect(results.some((service) => service.id === 'pmegp-new-enterprise')).toBe(true);
+  });
+
   it('should filter services by category', async () => {
     const results = await serviceRepository.searchServices('', 'education');
     expect(results.length).toBeGreaterThan(0);

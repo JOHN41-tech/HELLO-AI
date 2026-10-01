@@ -65,6 +65,10 @@ export class MockServiceRepository implements IServiceRepository {
 
   public async searchServices(query: string, category?: ServiceCategory): Promise<GovernmentService[]> {
     const q = query.toLowerCase().trim();
+    const stopWords = new Set(['what', 'which', 'where', 'when', 'how', 'tell', 'about', 'the', 'for', 'and', 'need', 'help']);
+    const queryTokens = q
+      .split(/[^\p{L}\p{N}]+/u)
+      .filter((token) => token.length > 2 && !stopWords.has(token));
     return (await this.getAllServices()).filter((service) => {
       if (category && service.category !== category) return false;
       if (!q) return true;
@@ -74,8 +78,10 @@ export class MockServiceRepository implements IServiceRepository {
         ...Object.values(service.description),
         ...Object.values(service.targetUsers),
         ...service.tags,
-      ];
-      return searchable.some((value) => value.toLowerCase().includes(q));
+      ].join(' ').toLowerCase();
+      // Match meaningful terms inside natural-language questions (for example,
+      // "What is PMEGP?") instead of requiring the entire question to be a tag.
+      return searchable.includes(q) || queryTokens.some((token) => searchable.includes(token));
     });
   }
 

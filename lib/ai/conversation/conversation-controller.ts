@@ -211,7 +211,10 @@ export async function processConversationTurn(input: {
     };
   }
 
-  if (response.nextAction === 'PROVIDE_GUIDANCE' && isCatalogInformationRequest(safeMessage)) {
+  // A model can classify a direct fact question as GENERAL_RESPONSE or SEARCH_SERVICES
+  // even when it has selected the right catalog record. Do not replace a grounded answer
+  // with an eligibility prompt just because the action label is not PROVIDE_GUIDANCE.
+  if (isCatalogInformationRequest(safeMessage)) {
     input.session.currentStage = 'GUIDANCE';
     input.session.missingInformation = [];
     const responseText = redactSensitiveText(response.responseText ?? response.message);
